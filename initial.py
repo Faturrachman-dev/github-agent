@@ -25,7 +25,10 @@ analyzer = Agent(
         base_url=MODEL_CONFIG["base_url"],
         temperature=MODEL_CONFIG["temperature"]
     ),
-    tools=[GithubTools(), DuckDuckGoTools()],
+    tools=[
+        GithubTools(api_key=os.getenv("GITHUB_API_TOKEN")),  # Initialize with GitHub token
+        DuckDuckGoTools()
+    ],
     instructions=[
         "You are a GitHub Open-Source Project Analyzer focused on Python repositories.",
         "Provide explanations tailored to the user's expertise (beginner or senior).",
