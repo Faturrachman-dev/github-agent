@@ -1,0 +1,6 @@
+agno>=1.0.0
+duckduckgo-search>=3.0.0
+pygithub>=2.0.0
+python-dotenv>=1.0.0
+platforms
+mcp
