@@ -1,0 +1,181 @@
+name: Update README with Yesterday's and Monthly Commits
+on:
+  schedule:
+    - cron: "0 17 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout profile repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: Faturrachman-dev/faturrachman-dev
+          path: faturrachman-dev
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Count Commits
+        env:
+          COMMIT_COUNTER_TOKEN: ${{ secrets.COMMIT_COUNTER_TOKEN }}
+        run: |
+          # Calculate the start of yesterday in WIB (UTC+7)
+          YESTERDAY_START=$(TZ=Asia/Jakarta date -d "yesterday" +%Y-%m-%d)
+          YESTERDAY_START_UTC=$(date -u -d "$YESTERDAY_START 00:00:00 -7 hours" +%Y-%m-%dT%H:%M:%SZ)
+          echo "Counting yesterday's commits since: $YESTERDAY_START_UTC (00:00 WIB yesterday)"
+
+          # Calculate the start of the current month in WIB
+          MONTH_START=$(TZ=Asia/Jakarta date +%Y-%m-01)
+          MONTH_START_UTC=$(date -u -d "$MONTH_START 00:00:00 -7 hours" +%Y-%m-%dT%H:%M:%SZ)
+          CURRENT_MONTH=$(TZ=Asia/Jakarta date +%Y-%m)
+          echo "Counting this month's commits since: $MONTH_START_UTC (start of $CURRENT_MONTH)"
+
+          # Get the list of repositories for the user with pagination
+          PAGE=1
+          REPOS=""
+          RETRY_COUNT=0
+          while true; do
+            RESPONSE=$(curl -s -D headers.txt -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/users/Faturrachman-dev/repos?per_page=100&page=$PAGE")
+            REMAINING=$(grep -i '^X-Rate-Limit-Remaining:' headers.txt | awk '{print $2}' || echo 5000)
+            if [ "$REMAINING" -lt 100 ]; then
+              echo "Warning: Rate limit nearing (remaining: $REMAINING), waiting 60s..."
+              sleep 60
+            fi
+            if [ $? -ne 0 ]; then
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+              if [ $RETRY_COUNT -gt 3 ]; then
+                echo "Error: Failed to fetch repositories after 3 retries, skipping..."
+                break
+              fi
+              echo "Retrying repository list fetch ($RETRY_COUNT/3)..."
+              sleep $((2 ** RETRY_COUNT))
+              continue
+            fi
+            NEW_REPOS=$(echo "$RESPONSE" | jq -r '.[].name' | tr '\n' ' ')
+            REPOS="$REPOS $NEW_REPOS"
+            LINK=$(grep -i '^link:' headers.txt || true)
+            rm headers.txt
+            if [[ ! "$LINK" =~ "rel=\"next\"" ]]; then
+              break
+            fi
+            PAGE=$((PAGE + 1))
+            sleep 2
+          done
+          
+          TOTAL_YESTERDAY_COMMITS=0
+          TOTAL_MONTH_COMMITS=0
+          
+          # Loop through each repository and count commits
+          for REPO in $REPOS; do
+            echo "Processing repository: $REPO"
+            
+            # Count yesterday's commits
+            COMMITS=0
+            PAGE=1
+            RETRY_COUNT=0
+            while true; do
+              if ! curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | jq -s length > /dev/null; then
+                RETRY_COUNT=$((RETRY_COUNT + 1))
+                if [ $RETRY_COUNT -gt 3 ]; then
+                  echo "Error: Failed to fetch yesterday's commits for $REPO after 3 retries, skipping..."
+                  continue 2
+                fi
+                echo "Retrying yesterday's commit fetch for $REPO ($RETRY_COUNT/3)..."
+                sleep $((2 ** RETRY_COUNT))
+                continue
+              fi
+              PAGE_COMMITS=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | jq length)
+              COMMITS=$((COMMITS + PAGE_COMMITS))
+              LINK=$(curl -s -I -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | grep -i '^link:' || true)
+              if [[ ! "$LINK" =~ "rel=\"next\"" ]]; then
+                break
+              fi
+              PAGE=$((PAGE + 1))
+            done
+            echo "Yesterday's commits in $REPO: $COMMITS"
+            TOTAL_YESTERDAY_COMMITS=$((TOTAL_YESTERDAY_COMMITS + COMMITS))
+
+            # Count this month's commits
+            COMMITS=0
+            PAGE=1
+            RETRY_COUNT=0
+            while true; do
+              if ! curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | jq -s length > /dev/null; then
+                RETRY_COUNT=$((RETRY_COUNT + 1))
+                if [ $RETRY_COUNT -gt 3 ]; then
+                  echo "Error: Failed to fetch this month's commits for $REPO after 3 retries, skipping..."
+                  continue 2
+                fi
+                echo "Retrying this month's commit fetch for $REPO ($RETRY_COUNT/3)..."
+                sleep $((2 ** RETRY_COUNT))
+                continue
+              fi
+              PAGE_COMMITS=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | jq length)
+              COMMITS=$((COMMITS + PAGE_COMMITS))
+              LINK=$(curl -s -I -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | grep -i '^link:' || true)
+              if [[ ! "$LINK" =~ "rel=\"next\"" ]]; then
+                break
+              fi
+              PAGE=$((PAGE + 1))
+            done
+            echo "This month's commits in $REPO: $COMMITS"
+            TOTAL_MONTH_COMMITS=$((TOTAL_MONTH_COMMITS + COMMITS))
+          done
+          
+          # Get previous monthly total from README
+          PREV_MONTH_COMMITS=0
+          if grep -q "<!-- MONTH_COMMITS:" faturrachman-dev/README.md; then
+            PREV_MONTH_COMMITS=$(grep "<!-- MONTH_COMMITS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_COMMITS: \([0-9]\+\) .* -->/\1/')
+            PREV_MONTH=$(grep "<!-- MONTH_COMMITS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_COMMITS: [0-9]\+ \(.*\) -->/\1/')
+          fi
+
+          # Reset or accumulate monthly commits
+          if [[ "$PREV_MONTH" != "$CURRENT_MONTH" ]]; then
+            FINAL_MONTH_COMMITS=$TOTAL_MONTH_COMMITS
+          else
+            FINAL_MONTH_COMMITS=$((PREV_MONTH_COMMITS + TOTAL_YESTERDAY_COMMITS))
+          fi
+
+          echo "Total yesterday's commits: $TOTAL_YESTERDAY_COMMITS"
+          echo "Total this month's commits: $FINAL_MONTH_COMMITS"
+          echo "TODAY_COMMITS=$TOTAL_YESTERDAY_COMMITS" >> $GITHUB_ENV
+          echo "MONTH_COMMITS=$FINAL_MONTH_COMMITS" >> $GITHUB_ENV
+          echo "CURRENT_MONTH=$CURRENT_MONTH" >> $GITHUB_ENV
+
+      - name: Update README
+        run: |
+          # Update the placeholder in the comment line for yesterday's commits
+          if grep -q "<!-- TODAY_COMMITS:" faturrachman-dev/README.md; then
+            sed -i "s/<!-- TODAY_COMMITS: [0-9]\+ -->/<!-- TODAY_COMMITS: $TODAY_COMMITS -->/g" faturrachman-dev/README.md
+          else
+            echo "<!-- TODAY_COMMITS: $TODAY_COMMITS -->" >> faturrachman-dev/README.md
+            echo "![Yesterday's Commits](https://img.shields.io/badge/Yesterday's%20Commits-$TODAY_COMMITS-blue)" >> faturrachman-dev/README.md
+          fi
+          # Update the badge line for yesterday's commits
+          if grep -q "Yesterday's%20Commits-[0-9]\+-blue" faturrachman-dev/README.md; then
+            sed -i "s/\(Yesterday's%20Commits-\)[0-9]\+\(-blue\)/\1$TODAY_COMMITS\2/" faturrachman-dev/README.md
+          fi
+
+          # Update the placeholder in the comment line for monthly commits
+          if grep -q "<!-- MONTH_COMMITS:" faturrachman-dev/README.md; then
+            sed -i "s/<!-- MONTH_COMMITS: [0-9]\+ .* -->/<!-- MONTH_COMMITS: $MONTH_COMMITS $CURRENT_MONTH -->/g" faturrachman-dev/README.md
+          else
+            echo "<!-- MONTH_COMMITS: $MONTH_COMMITS $CURRENT_MONTH -->" >> faturrachman-dev/README.md
+            echo "![This Month's Commits](https://img.shields.io/badge/This%20Month's%20Commits-$MONTH_COMMITS-green)" >> faturrachman-dev/README.md
+          fi
+          # Update the badge line for monthly commits
+          if grep -q "This%20Month's%20Commits-[0-9]\+-green" faturrachman-dev/README.md; then
+            sed -i "s/\(This%20Month's%20Commits-\)[0-9]\+\(-green\)/\1$MONTH_COMMITS\2/" faturrachman-dev/README.md
+          fi
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update yesterday's and monthly commits"
+          repository: faturrachman-dev
