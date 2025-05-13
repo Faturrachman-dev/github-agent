@@ -1,4 +1,4 @@
-name: Update README with Yesterday's and Monthly Commits
+name: Update README with All GitHub Contributions
 on:
   schedule:
     - cron: "0 17 * * *"
@@ -19,163 +19,288 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
 
-      - name: Count Commits
+      - name: Count All Contributions
         env:
           COMMIT_COUNTER_TOKEN: ${{ secrets.COMMIT_COUNTER_TOKEN }}
         run: |
           # Calculate the start of yesterday in WIB (UTC+7)
           YESTERDAY_START=$(TZ=Asia/Jakarta date -d "yesterday" +%Y-%m-%d)
           YESTERDAY_START_UTC=$(date -u -d "$YESTERDAY_START 00:00:00 -7 hours" +%Y-%m-%dT%H:%M:%SZ)
-          echo "Counting yesterday's commits since: $YESTERDAY_START_UTC (00:00 WIB yesterday)"
+          echo "Counting yesterday's contributions since: $YESTERDAY_START_UTC (00:00 WIB yesterday)"
 
           # Calculate the start of the current month in WIB
           MONTH_START=$(TZ=Asia/Jakarta date +%Y-%m-01)
           MONTH_START_UTC=$(date -u -d "$MONTH_START 00:00:00 -7 hours" +%Y-%m-%dT%H:%M:%SZ)
           CURRENT_MONTH=$(TZ=Asia/Jakarta date +%Y-%m)
-          echo "Counting this month's commits since: $MONTH_START_UTC (start of $CURRENT_MONTH)"
+          echo "Counting this month's contributions since: $MONTH_START_UTC (start of $CURRENT_MONTH)"
 
-          # Get the list of repositories for the user with pagination
-          PAGE=1
-          REPOS=""
-          RETRY_COUNT=0
-          while true; do
-            RESPONSE=$(curl -s -D headers.txt -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/users/Faturrachman-dev/repos?per_page=100&page=$PAGE")
-            REMAINING=$(grep -i '^X-Rate-Limit-Remaining:' headers.txt | awk '{print $2}' || echo 5000)
-            if [ "$REMAINING" -lt 100 ]; then
-              echo "Warning: Rate limit nearing (remaining: $REMAINING), waiting 60s..."
-              sleep 60
-            fi
-            if [ $? -ne 0 ]; then
-              RETRY_COUNT=$((RETRY_COUNT + 1))
-              if [ $RETRY_COUNT -gt 3 ]; then
-                echo "Error: Failed to fetch repositories after 3 retries, skipping..."
-                break
-              fi
-              echo "Retrying repository list fetch ($RETRY_COUNT/3)..."
-              sleep $((2 ** RETRY_COUNT))
-              continue
-            fi
-            NEW_REPOS=$(echo "$RESPONSE" | jq -r '.[].name' | tr '\n' ' ')
-            REPOS="$REPOS $NEW_REPOS"
-            LINK=$(grep -i '^link:' headers.txt || true)
-            rm headers.txt
-            if [[ ! "$LINK" =~ "rel=\"next\"" ]]; then
-              break
-            fi
-            PAGE=$((PAGE + 1))
-            sleep 2
-          done
-          
-          TOTAL_YESTERDAY_COMMITS=0
-          TOTAL_MONTH_COMMITS=0
-          
-          # Loop through each repository and count commits
-          for REPO in $REPOS; do
-            echo "Processing repository: $REPO"
+          # Function to count GitHub events directly using the GitHub API
+          count_contributions() {
+            local since_date="$1"
+            local until_date="$2"
             
-            # Count yesterday's commits
-            COMMITS=0
-            PAGE=1
-            RETRY_COUNT=0
-            while true; do
-              if ! curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | jq -s length > /dev/null; then
-                RETRY_COUNT=$((RETRY_COUNT + 1))
-                if [ $RETRY_COUNT -gt 3 ]; then
-                  echo "Error: Failed to fetch yesterday's commits for $REPO after 3 retries, skipping..."
-                  continue 2
-                fi
-                echo "Retrying yesterday's commit fetch for $REPO ($RETRY_COUNT/3)..."
-                sleep $((2 ** RETRY_COUNT))
-                continue
-              fi
-              PAGE_COMMITS=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | jq length)
-              COMMITS=$((COMMITS + PAGE_COMMITS))
-              LINK=$(curl -s -I -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | grep -i '^link:' || true)
-              if [[ ! "$LINK" =~ "rel=\"next\"" ]]; then
+            echo "Fetching contributions from $since_date to $until_date..."
+            
+            # Initialize counters
+            local push_events=0
+            local total_commits=0
+            local create_events=0
+            local issues_events=0
+            local issue_comments=0
+            local pr_events=0
+            local pr_reviews=0
+            local pr_review_comments=0
+            local commit_comments=0
+            local fork_events=0
+            local watch_events=0
+            local release_events=0
+            local public_events=0
+            
+            # Fetch and process GitHub events (up to 3 pages)
+            for page in {1..3}; do
+              echo "Fetching events page $page..."
+              
+              # Use -s for silent mode and capture the response in a variable
+              local response=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "https://api.github.com/users/Faturrachman-dev/events?per_page=100&page=$page")
+              
+              # Check if we got a valid response (should be a JSON array)
+              if ! echo "$response" | jq -e 'if type=="array" then true else false end' > /dev/null; then
+                echo "Warning: Invalid response format from API. Expected JSON array."
+                echo "Response sample: $(echo "$response" | head -c 100)..."
                 break
               fi
-              PAGE=$((PAGE + 1))
+              
+              # Check if array is empty
+              if [ "$(echo "$response" | jq 'length')" -eq 0 ]; then
+                echo "No more events found."
+                break
+              fi
+              
+              # Process each event
+              local event_count=$(echo "$response" | jq 'length')
+              echo "Processing $event_count events from page $page..."
+              
+              for i in $(seq 0 $((event_count - 1))); do
+                # Extract event properties
+                local event_data=$(echo "$response" | jq --arg i "$i" '.[$i|tonumber]')
+                local event_type=$(echo "$event_data" | jq -r '.type // "unknown"')
+                local event_date=$(echo "$event_data" | jq -r '.created_at // ""')
+                
+                # Debug output for the first event of each page
+                if [ "$i" -eq 0 ]; then
+                  echo "Sample event: type=$event_type, date=$event_date"
+                fi
+                
+                # Skip events outside our date range
+                if [ -z "$event_date" ] || [ "$event_date" \< "$since_date" ] || [ "$event_date" \> "$until_date" ]; then
+                  continue
+                fi
+                
+                # Count by event type
+                case "$event_type" in
+                  "PushEvent")
+                    push_events=$((push_events + 1))
+                    local commit_size=$(echo "$event_data" | jq '.payload.size // 0')
+                    # Handle non-numeric responses
+                    if [[ "$commit_size" =~ ^[0-9]+$ ]]; then
+                      total_commits=$((total_commits + commit_size))
+                    fi
+                    ;;
+                  "CreateEvent") create_events=$((create_events + 1)) ;;
+                  "IssuesEvent") issues_events=$((issues_events + 1)) ;;
+                  "IssueCommentEvent") issue_comments=$((issue_comments + 1)) ;;
+                  "PullRequestEvent") pr_events=$((pr_events + 1)) ;;
+                  "PullRequestReviewEvent") pr_reviews=$((pr_reviews + 1)) ;;
+                  "PullRequestReviewCommentEvent") pr_review_comments=$((pr_review_comments + 1)) ;;
+                  "CommitCommentEvent") commit_comments=$((commit_comments + 1)) ;;
+                  "ForkEvent") fork_events=$((fork_events + 1)) ;;
+                  "WatchEvent") watch_events=$((watch_events + 1)) ;;
+                  "ReleaseEvent") release_events=$((release_events + 1)) ;;
+                  "PublicEvent") public_events=$((public_events + 1)) ;;
+                esac
+              done
+              
+              # Check if there are more pages
+              local link_header=$(curl -s -I -o /dev/null -w '%{http_code}\n' -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "https://api.github.com/users/Faturrachman-dev/events?per_page=100&page=$((page+1))")
+              
+              if [ "$link_header" != "200" ] || [ "$event_count" -lt 100 ]; then
+                echo "No more pages to fetch."
+                break
+              fi
+              
+              # Add a small delay to avoid rate limiting
+              sleep 1
             done
-            echo "Yesterday's commits in $REPO: $COMMITS"
-            TOTAL_YESTERDAY_COMMITS=$((TOTAL_YESTERDAY_COMMITS + COMMITS))
+            
+            # Calculate total contributions
+            local other_contributions=$((create_events + issues_events + issue_comments + pr_events + pr_reviews + pr_review_comments + commit_comments + fork_events + watch_events + release_events + public_events))
+            local total_contributions=$((total_commits + other_contributions))
+            
+            # Output result summary
+            echo "Contribution summary for period $since_date to $until_date:"
+            echo "  Push events: $push_events (with $total_commits commits)"
+            echo "  Create events: $create_events"
+            echo "  Issues events: $issues_events"
+            echo "  Issue comments: $issue_comments"
+            echo "  PR events: $pr_events"
+            echo "  PR reviews: $pr_reviews"
+            echo "  PR review comments: $pr_review_comments"
+            echo "  Commit comments: $commit_comments"
+            echo "  Fork events: $fork_events"
+            echo "  Watch events: $watch_events"
+            echo "  Release events: $release_events"
+            echo "  Public events: $public_events"
+            echo "  Total contributions: $total_contributions"
+            
+            # Return values as a specially formatted key-value string for parsing
+            echo "RESULT:$total_contributions:$total_commits:$other_contributions"
+          }
 
-            # Count this month's commits
-            COMMITS=0
-            PAGE=1
-            RETRY_COUNT=0
-            while true; do
-              if ! curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | jq -s length > /dev/null; then
-                RETRY_COUNT=$((RETRY_COUNT + 1))
-                if [ $RETRY_COUNT -gt 3 ]; then
-                  echo "Error: Failed to fetch this month's commits for $REPO after 3 retries, skipping..."
-                  continue 2
-                fi
-                echo "Retrying this month's commit fetch for $REPO ($RETRY_COUNT/3)..."
-                sleep $((2 ** RETRY_COUNT))
-                continue
-              fi
-              PAGE_COMMITS=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | jq length)
-              COMMITS=$((COMMITS + PAGE_COMMITS))
-              LINK=$(curl -s -I -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | grep -i '^link:' || true)
-              if [[ ! "$LINK" =~ "rel=\"next\"" ]]; then
-                break
-              fi
-              PAGE=$((PAGE + 1))
-            done
-            echo "This month's commits in $REPO: $COMMITS"
-            TOTAL_MONTH_COMMITS=$((TOTAL_MONTH_COMMITS + COMMITS))
-          done
+          # Count yesterday's contributions
+          YESTERDAY_END_UTC=$(date -u -d "$YESTERDAY_START 23:59:59 +7 hours" +%Y-%m-%dT%H:%M:%SZ)
+          echo "Counting yesterday's contributions from $YESTERDAY_START_UTC to $YESTERDAY_END_UTC"
           
-          # Get previous monthly total from README
+          # Capture function return values with a clearer format to parse
+          YESTERDAY_OUTPUT=$(count_contributions "$YESTERDAY_START_UTC" "$YESTERDAY_END_UTC")
+          TODAY_RESULTS=$(echo "$YESTERDAY_OUTPUT" | grep "^RESULT:" | cut -d':' -f2-)
+          
+          if [[ "$TODAY_RESULTS" ]]; then
+            TODAY_CONTRIBUTIONS=$(echo "$TODAY_RESULTS" | cut -d':' -f1)
+            TODAY_COMMITS=$(echo "$TODAY_RESULTS" | cut -d':' -f2)
+            OTHER_TODAY_CONTRIBUTIONS=$(echo "$TODAY_RESULTS" | cut -d':' -f3)
+          else
+            # Default values if parsing fails
+            TODAY_CONTRIBUTIONS=0
+            TODAY_COMMITS=0
+            OTHER_TODAY_CONTRIBUTIONS=0
+            echo "Warning: Failed to parse yesterday's contribution results"
+          fi
+          
+          # Export values to GitHub Actions environment
+          echo "TODAY_CONTRIBUTIONS=$TODAY_CONTRIBUTIONS" >> $GITHUB_ENV
+          echo "TODAY_COMMITS=$TODAY_COMMITS" >> $GITHUB_ENV
+          echo "OTHER_TODAY_CONTRIBUTIONS=$OTHER_TODAY_CONTRIBUTIONS" >> $GITHUB_ENV
+          
+          # Get previous month data from README
+          PREV_MONTH_CONTRIBUTIONS=0
           PREV_MONTH_COMMITS=0
+          
           if grep -q "<!-- MONTH_COMMITS:" faturrachman-dev/README.md; then
             PREV_MONTH_COMMITS=$(grep "<!-- MONTH_COMMITS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_COMMITS: \([0-9]\+\) .* -->/\1/')
             PREV_MONTH=$(grep "<!-- MONTH_COMMITS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_COMMITS: [0-9]\+ \(.*\) -->/\1/')
           fi
-
-          # Reset or accumulate monthly commits
-          if [[ "$PREV_MONTH" != "$CURRENT_MONTH" ]]; then
-            FINAL_MONTH_COMMITS=$TOTAL_MONTH_COMMITS
-          else
-            FINAL_MONTH_COMMITS=$((PREV_MONTH_COMMITS + TOTAL_YESTERDAY_COMMITS))
+          
+          if grep -q "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md; then
+            PREV_MONTH_CONTRIBUTIONS=$(grep "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_CONTRIBUTIONS: \([0-9]\+\) .* -->/\1/')
+            PREV_MONTH_CONTR=$(grep "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_CONTRIBUTIONS: [0-9]\+ \(.*\) -->/\1/')
           fi
-
-          echo "Total yesterday's commits: $TOTAL_YESTERDAY_COMMITS"
-          echo "Total this month's commits: $FINAL_MONTH_COMMITS"
-          echo "TODAY_COMMITS=$TOTAL_YESTERDAY_COMMITS" >> $GITHUB_ENV
-          echo "MONTH_COMMITS=$FINAL_MONTH_COMMITS" >> $GITHUB_ENV
+          
+          # Count the entire month's contributions
+          echo "Counting contributions for the entire month..."
+          MONTH_END_UTC=$(date -u -d "$(date +%Y-%m-01) +1 month -1 day 23:59:59 +7 hours" +%Y-%m-%dT%H:%M:%SZ)
+          
+          # Capture function return values for month using the same approach
+          MONTH_OUTPUT=$(count_contributions "$MONTH_START_UTC" "$MONTH_END_UTC")
+          MONTH_RESULTS=$(echo "$MONTH_OUTPUT" | grep "^RESULT:" | cut -d':' -f2-)
+          
+          if [[ "$MONTH_RESULTS" ]]; then
+            MONTH_ALL=$(echo "$MONTH_RESULTS" | cut -d':' -f1)
+            COMMITS_MONTH_ALL=$(echo "$MONTH_RESULTS" | cut -d':' -f2)
+            OTHER_MONTH_ALL=$(echo "$MONTH_RESULTS" | cut -d':' -f3)
+          else
+            # Default values if parsing fails
+            MONTH_ALL=0
+            COMMITS_MONTH_ALL=0
+            OTHER_MONTH_ALL=0
+            echo "Warning: Failed to parse monthly contribution results"
+          fi
+          
+          # Determine final month totals
+          if [[ "$PREV_MONTH" != "$CURRENT_MONTH" || "$PREV_MONTH_CONTR" != "$CURRENT_MONTH" ]]; then
+            echo "New month detected or first run, using fresh counts"
+            MONTH_CONTRIBUTIONS=$MONTH_ALL
+            MONTH_COMMITS=$COMMITS_MONTH_ALL
+          else
+            echo "Same month, using previous counts plus yesterday's contributions"
+            # Use the stored counts and add yesterday's to them
+            MONTH_CONTRIBUTIONS=$((PREV_MONTH_CONTRIBUTIONS + TODAY_CONTRIBUTIONS))
+            MONTH_COMMITS=$((PREV_MONTH_COMMITS + TODAY_COMMITS))
+          fi
+          
+          # Export month values to GitHub Actions environment
+          echo "MONTH_CONTRIBUTIONS=$MONTH_CONTRIBUTIONS" >> $GITHUB_ENV
+          echo "MONTH_COMMITS=$MONTH_COMMITS" >> $GITHUB_ENV
           echo "CURRENT_MONTH=$CURRENT_MONTH" >> $GITHUB_ENV
+          
+          echo "Final Summary:"
+          echo "  Yesterday's commits: $TODAY_COMMITS"
+          echo "  Yesterday's other contributions: $OTHER_TODAY_CONTRIBUTIONS"
+          echo "  Yesterday's total contributions: $TODAY_CONTRIBUTIONS"
+          echo "  This month's commits: $MONTH_COMMITS"
+          echo "  This month's total contributions: $MONTH_CONTRIBUTIONS"
 
       - name: Update README
         run: |
+          # Ensure values are numbers or default to 0
+          TODAY_COMMITS=${TODAY_COMMITS:-0}
+          TODAY_CONTRIBUTIONS=${TODAY_CONTRIBUTIONS:-0}
+          MONTH_COMMITS=${MONTH_COMMITS:-0}
+          MONTH_CONTRIBUTIONS=${MONTH_CONTRIBUTIONS:-0}
+          
           # Update the placeholder in the comment line for yesterday's commits
           if grep -q "<!-- TODAY_COMMITS:" faturrachman-dev/README.md; then
-            sed -i "s/<!-- TODAY_COMMITS: [0-9]\+ -->/<!-- TODAY_COMMITS: $TODAY_COMMITS -->/g" faturrachman-dev/README.md
+            sed -i "s/<!-- TODAY_COMMITS:.*-->/<!-- TODAY_COMMITS: $TODAY_COMMITS -->/g" faturrachman-dev/README.md
           else
             echo "<!-- TODAY_COMMITS: $TODAY_COMMITS -->" >> faturrachman-dev/README.md
             echo "![Yesterday's Commits](https://img.shields.io/badge/Yesterday's%20Commits-$TODAY_COMMITS-blue)" >> faturrachman-dev/README.md
           fi
           # Update the badge line for yesterday's commits
-          if grep -q "Yesterday's%20Commits-[0-9]\+-blue" faturrachman-dev/README.md; then
-            sed -i "s/\(Yesterday's%20Commits-\)[0-9]\+\(-blue\)/\1$TODAY_COMMITS\2/" faturrachman-dev/README.md
+          if grep -q "Yesterday's%20Commits-.*-blue" faturrachman-dev/README.md; then
+            sed -i "s/Yesterday's%20Commits-.*-blue/Yesterday's%20Commits-$TODAY_COMMITS-blue/g" faturrachman-dev/README.md
+          fi
+          
+          # Add yesterday's total contributions
+          if grep -q "<!-- TODAY_CONTRIBUTIONS:" faturrachman-dev/README.md; then
+            sed -i "s/<!-- TODAY_CONTRIBUTIONS:.*-->/<!-- TODAY_CONTRIBUTIONS: $TODAY_CONTRIBUTIONS -->/g" faturrachman-dev/README.md
+          else
+            echo "<!-- TODAY_CONTRIBUTIONS: $TODAY_CONTRIBUTIONS -->" >> faturrachman-dev/README.md
+            echo "![Yesterday's Contributions](https://img.shields.io/badge/Yesterday's%20Contributions-$TODAY_CONTRIBUTIONS-purple)" >> faturrachman-dev/README.md
+          fi
+          # Update the badge line for yesterday's contributions
+          if grep -q "Yesterday's%20Contributions-.*-purple" faturrachman-dev/README.md; then
+            sed -i "s/Yesterday's%20Contributions-.*-purple/Yesterday's%20Contributions-$TODAY_CONTRIBUTIONS-purple/g" faturrachman-dev/README.md
           fi
 
           # Update the placeholder in the comment line for monthly commits
           if grep -q "<!-- MONTH_COMMITS:" faturrachman-dev/README.md; then
-            sed -i "s/<!-- MONTH_COMMITS: [0-9]\+ .* -->/<!-- MONTH_COMMITS: $MONTH_COMMITS $CURRENT_MONTH -->/g" faturrachman-dev/README.md
+            sed -i "s/<!-- MONTH_COMMITS:.*-->/<!-- MONTH_COMMITS: $MONTH_COMMITS $CURRENT_MONTH -->/g" faturrachman-dev/README.md
           else
             echo "<!-- MONTH_COMMITS: $MONTH_COMMITS $CURRENT_MONTH -->" >> faturrachman-dev/README.md
             echo "![This Month's Commits](https://img.shields.io/badge/This%20Month's%20Commits-$MONTH_COMMITS-green)" >> faturrachman-dev/README.md
           fi
           # Update the badge line for monthly commits
-          if grep -q "This%20Month's%20Commits-[0-9]\+-green" faturrachman-dev/README.md; then
-            sed -i "s/\(This%20Month's%20Commits-\)[0-9]\+\(-green\)/\1$MONTH_COMMITS\2/" faturrachman-dev/README.md
+          if grep -q "This%20Month's%20Commits-.*-green" faturrachman-dev/README.md; then
+            sed -i "s/This%20Month's%20Commits-.*-green/This%20Month's%20Commits-$MONTH_COMMITS-green/g" faturrachman-dev/README.md
+          fi
+          
+          # Add monthly total contributions
+          if grep -q "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md; then
+            sed -i "s/<!-- MONTH_CONTRIBUTIONS:.*-->/<!-- MONTH_CONTRIBUTIONS: $MONTH_CONTRIBUTIONS $CURRENT_MONTH -->/g" faturrachman-dev/README.md
+          else
+            echo "<!-- MONTH_CONTRIBUTIONS: $MONTH_CONTRIBUTIONS $CURRENT_MONTH -->" >> faturrachman-dev/README.md
+            echo "![This Month's Contributions](https://img.shields.io/badge/This%20Month's%20Contributions-$MONTH_CONTRIBUTIONS-orange)" >> faturrachman-dev/README.md
+          fi
+          # Update the badge line for monthly contributions
+          if grep -q "This%20Month's%20Contributions-.*-orange" faturrachman-dev/README.md; then
+            sed -i "s/This%20Month's%20Contributions-.*-orange/This%20Month's%20Contributions-$MONTH_CONTRIBUTIONS-orange/g" faturrachman-dev/README.md
           fi
 
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Update yesterday's and monthly commits"
+          commit_message: "Update GitHub contribution statistics"
           repository: faturrachman-dev
