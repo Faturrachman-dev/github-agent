@@ -1,436 +1,466 @@
-2025-05-13T13:36:06.0014230Z Current runner version: '2.323.0'
-2025-05-13T13:36:06.0039925Z ##[group]Operating System
-2025-05-13T13:36:06.0040746Z Ubuntu
-2025-05-13T13:36:06.0041224Z 24.04.2
-2025-05-13T13:36:06.0041703Z LTS
-2025-05-13T13:36:06.0042270Z ##[endgroup]
-2025-05-13T13:36:06.0042769Z ##[group]Runner Image
-2025-05-13T13:36:06.0043646Z Image: ubuntu-24.04
-2025-05-13T13:36:06.0044296Z Version: 20250504.1.0
-2025-05-13T13:36:06.0045341Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250504.1/images/ubuntu/Ubuntu2404-Readme.md
-2025-05-13T13:36:06.0046694Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250504.1
-2025-05-13T13:36:06.0047593Z ##[endgroup]
-2025-05-13T13:36:06.0048088Z ##[group]Runner Image Provisioner
-2025-05-13T13:36:06.0048696Z 2.0.422.1
-2025-05-13T13:36:06.0049098Z ##[endgroup]
-2025-05-13T13:36:06.0050127Z ##[group]GITHUB_TOKEN Permissions
-2025-05-13T13:36:06.0052175Z Contents: write
-2025-05-13T13:36:06.0052833Z Metadata: read
-2025-05-13T13:36:06.0053751Z ##[endgroup]
-2025-05-13T13:36:06.0056308Z Secret source: Actions
-2025-05-13T13:36:06.0057005Z Prepare workflow directory
-2025-05-13T13:36:06.0377836Z Prepare all required actions
-2025-05-13T13:36:06.0416224Z Getting action download info
-2025-05-13T13:36:06.4911712Z ##[group]Download immutable action package 'actions/checkout@v4'
-2025-05-13T13:36:06.4912924Z Version: 4.2.2
-2025-05-13T13:36:06.4914378Z Digest: sha256:ccb2698953eaebd21c7bf6268a94f9c26518a7e38e27e0b83c1fe1ad049819b1
-2025-05-13T13:36:06.4915881Z Source commit SHA: 11bd71901bbe5b1630ceea73d27597364c9af683
-2025-05-13T13:36:06.4916739Z ##[endgroup]
-2025-05-13T13:36:06.5727220Z Download action repository 'stefanzweifel/git-auto-commit-action@v4' (SHA:3ea6ae190baf489ba007f7c92608f33ce20ef04a)
-2025-05-13T13:36:06.8196519Z Complete job name: update
-2025-05-13T13:36:06.8914177Z ##[group]Run actions/checkout@v4
-2025-05-13T13:36:06.8915149Z with:
-2025-05-13T13:36:06.8915571Z   fetch-depth: 0
-2025-05-13T13:36:06.8916078Z   repository: Faturrachman-dev/faturrachman-dev
-2025-05-13T13:36:06.8916722Z   path: faturrachman-dev
-2025-05-13T13:36:06.8917435Z   token: ***
-2025-05-13T13:36:06.8917853Z   ssh-strict: true
-2025-05-13T13:36:06.8918302Z   ssh-user: git
-2025-05-13T13:36:06.8918732Z   persist-credentials: true
-2025-05-13T13:36:06.8919274Z   clean: true
-2025-05-13T13:36:06.8919760Z   sparse-checkout-cone-mode: true
-2025-05-13T13:36:06.8920337Z   fetch-tags: false
-2025-05-13T13:36:06.8920779Z   show-progress: true
-2025-05-13T13:36:06.8921224Z   lfs: false
-2025-05-13T13:36:06.8921630Z   submodules: false
-2025-05-13T13:36:06.8922074Z   set-safe-directory: true
-2025-05-13T13:36:06.8922792Z ##[endgroup]
-2025-05-13T13:36:07.0609653Z Syncing repository: Faturrachman-dev/faturrachman-dev
-2025-05-13T13:36:07.0612761Z ##[group]Getting Git version info
-2025-05-13T13:36:07.0614904Z Working directory is '/home/runner/work/faturrachman-dev/faturrachman-dev/faturrachman-dev'
-2025-05-13T13:36:07.0616288Z [command]/usr/bin/git version
-2025-05-13T13:36:07.0648013Z git version 2.49.0
-2025-05-13T13:36:07.0676841Z ##[endgroup]
-2025-05-13T13:36:07.0691939Z Temporarily overriding HOME='/home/runner/work/_temp/fa510431-e245-4d57-8142-d88a5727dec3' before making global git config changes
-2025-05-13T13:36:07.0695063Z Adding repository directory to the temporary git global config as a safe directory
-2025-05-13T13:36:07.0708312Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/faturrachman-dev/faturrachman-dev/faturrachman-dev
-2025-05-13T13:36:07.0746772Z ##[group]Initializing the repository
-2025-05-13T13:36:07.0754163Z [command]/usr/bin/git init /home/runner/work/faturrachman-dev/faturrachman-dev/faturrachman-dev
-2025-05-13T13:36:07.0816235Z hint: Using 'master' as the name for the initial branch. This default branch name
-2025-05-13T13:36:07.0818372Z hint: is subject to change. To configure the initial branch name to use in all
-2025-05-13T13:36:07.0820409Z hint: of your new repositories, which will suppress this warning, call:
-2025-05-13T13:36:07.0821913Z hint:
-2025-05-13T13:36:07.0823623Z hint: 	git config --global init.defaultBranch <name>
-2025-05-13T13:36:07.0824897Z hint:
-2025-05-13T13:36:07.0826150Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
-2025-05-13T13:36:07.0827891Z hint: 'development'. The just-created branch can be renamed via this command:
-2025-05-13T13:36:07.0829423Z hint:
-2025-05-13T13:36:07.0830265Z hint: 	git branch -m <name>
-2025-05-13T13:36:07.0832260Z Initialized empty Git repository in /home/runner/work/faturrachman-dev/faturrachman-dev/faturrachman-dev/.git/
-2025-05-13T13:36:07.0836551Z [command]/usr/bin/git remote add origin https://github.com/Faturrachman-dev/faturrachman-dev
-2025-05-13T13:36:07.0866919Z ##[endgroup]
-2025-05-13T13:36:07.0867702Z ##[group]Disabling automatic garbage collection
-2025-05-13T13:36:07.0870977Z [command]/usr/bin/git config --local gc.auto 0
-2025-05-13T13:36:07.0899631Z ##[endgroup]
-2025-05-13T13:36:07.0900363Z ##[group]Setting up auth
-2025-05-13T13:36:07.0905755Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
-2025-05-13T13:36:07.0935211Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
-2025-05-13T13:36:07.1209697Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
-2025-05-13T13:36:07.1239482Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
-2025-05-13T13:36:07.1467595Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
-2025-05-13T13:36:07.1510811Z ##[endgroup]
-2025-05-13T13:36:07.1511692Z ##[group]Fetching the repository
-2025-05-13T13:36:07.1519221Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
-2025-05-13T13:36:07.4926376Z From https://github.com/Faturrachman-dev/faturrachman-dev
-2025-05-13T13:36:07.4928487Z  * [new branch]      main       -> origin/main
-2025-05-13T13:36:07.4929611Z  * [new tag]         persona    -> persona
-2025-05-13T13:36:07.4969801Z [command]/usr/bin/git branch --list --remote origin/main
-2025-05-13T13:36:07.4992453Z   origin/main
-2025-05-13T13:36:07.5002474Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
-2025-05-13T13:36:07.5022805Z 34eed7648adbaf3b1c16151a7104237352f648ee
-2025-05-13T13:36:07.5029176Z ##[endgroup]
-2025-05-13T13:36:07.5030417Z ##[group]Determining the checkout info
-2025-05-13T13:36:07.5031845Z ##[endgroup]
-2025-05-13T13:36:07.5034240Z [command]/usr/bin/git sparse-checkout disable
-2025-05-13T13:36:07.5071142Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
-2025-05-13T13:36:07.5097196Z ##[group]Checking out the ref
-2025-05-13T13:36:07.5100607Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
-2025-05-13T13:36:07.5171063Z Switched to a new branch 'main'
-2025-05-13T13:36:07.5173934Z branch 'main' set up to track 'origin/main'.
-2025-05-13T13:36:07.5181247Z ##[endgroup]
-2025-05-13T13:36:07.5216054Z [command]/usr/bin/git log -1 --format=%H
-2025-05-13T13:36:07.5238012Z 34eed7648adbaf3b1c16151a7104237352f648ee
-2025-05-13T13:36:07.5426555Z ##[group]Run sudo apt-get install -y jq
-2025-05-13T13:36:07.5427576Z [36;1msudo apt-get install -y jq[0m
-2025-05-13T13:36:07.5457620Z shell: /usr/bin/bash -e {0}
-2025-05-13T13:36:07.5458377Z ##[endgroup]
-2025-05-13T13:36:07.6488767Z Reading package lists...
-2025-05-13T13:36:07.8281269Z Building dependency tree...
-2025-05-13T13:36:07.8292338Z Reading state information...
-2025-05-13T13:36:08.0283081Z jq is already the newest version (1.7.1-3build1).
-2025-05-13T13:36:08.0285657Z 0 upgraded, 0 newly installed, 0 to remove and 19 not upgraded.
-2025-05-13T13:36:08.0375552Z ##[group]Run # Calculate the start of yesterday in WIB (UTC+7)
-2025-05-13T13:36:08.0378152Z [36;1m# Calculate the start of yesterday in WIB (UTC+7)[0m
-2025-05-13T13:36:08.0380088Z [36;1mYESTERDAY_START=$(TZ=Asia/Jakarta date -d "yesterday" +%Y-%m-%d)[0m
-2025-05-13T13:36:08.0382544Z [36;1mYESTERDAY_START_UTC=$(date -u -d "$YESTERDAY_START 00:00:00 -7 hours" +%Y-%m-%dT%H:%M:%SZ)[0m
-2025-05-13T13:36:08.0385703Z [36;1mecho "Counting yesterday's contributions since: $YESTERDAY_START_UTC (00:00 WIB yesterday)"[0m
-2025-05-13T13:36:08.0387843Z [36;1m[0m
-2025-05-13T13:36:08.0388953Z [36;1m# Calculate the start of the current month in WIB[0m
-2025-05-13T13:36:08.0390600Z [36;1mMONTH_START=$(TZ=Asia/Jakarta date +%Y-%m-01)[0m
-2025-05-13T13:36:08.0392533Z [36;1mMONTH_START_UTC=$(date -u -d "$MONTH_START 00:00:00 -7 hours" +%Y-%m-%dT%H:%M:%SZ)[0m
-2025-05-13T13:36:08.0394743Z [36;1mCURRENT_MONTH=$(TZ=Asia/Jakarta date +%Y-%m)[0m
-2025-05-13T13:36:08.0397030Z [36;1mecho "Counting this month's contributions since: $MONTH_START_UTC (start of $CURRENT_MONTH)"[0m
-2025-05-13T13:36:08.0399121Z [36;1m[0m
-2025-05-13T13:36:08.0400424Z [36;1m# Function to count GitHub events directly using the GitHub API[0m
-2025-05-13T13:36:08.0402121Z [36;1mcount_contributions() {[0m
-2025-05-13T13:36:08.0403309Z [36;1m  local since_date="$1"[0m
-2025-05-13T13:36:08.0404688Z [36;1m  local until_date="$2"[0m
-2025-05-13T13:36:08.0405813Z [36;1m  [0m
-2025-05-13T13:36:08.0407199Z [36;1m  echo "Fetching contributions from $since_date to $until_date..."[0m
-2025-05-13T13:36:08.0408861Z [36;1m  [0m
-2025-05-13T13:36:08.0409745Z [36;1m  # Initialize counters[0m
-2025-05-13T13:36:08.0410878Z [36;1m  local push_events=0[0m
-2025-05-13T13:36:08.0411976Z [36;1m  local total_commits=0[0m
-2025-05-13T13:36:08.0413084Z [36;1m  local create_events=0[0m
-2025-05-13T13:36:08.0414295Z [36;1m  local issues_events=0[0m
-2025-05-13T13:36:08.0415397Z [36;1m  local issue_comments=0[0m
-2025-05-13T13:36:08.0416512Z [36;1m  local pr_events=0[0m
-2025-05-13T13:36:08.0417548Z [36;1m  local pr_reviews=0[0m
-2025-05-13T13:36:08.0418622Z [36;1m  local pr_review_comments=0[0m
-2025-05-13T13:36:08.0419785Z [36;1m  local commit_comments=0[0m
-2025-05-13T13:36:08.0420908Z [36;1m  local fork_events=0[0m
-2025-05-13T13:36:08.0421968Z [36;1m  local watch_events=0[0m
-2025-05-13T13:36:08.0423067Z [36;1m  local release_events=0[0m
-2025-05-13T13:36:08.0424458Z [36;1m  local public_events=0[0m
-2025-05-13T13:36:08.0425503Z [36;1m  [0m
-2025-05-13T13:36:08.0426536Z [36;1m  # Fetch and process GitHub events (up to 3 pages)[0m
-2025-05-13T13:36:08.0427892Z [36;1m  for page in {1..3}; do[0m
-2025-05-13T13:36:08.0429058Z [36;1m    echo "Fetching events page $page..."[0m
-2025-05-13T13:36:08.0430262Z [36;1m    [0m
-2025-05-13T13:36:08.0431451Z [36;1m    # Use -s for silent mode and capture the response in a variable[0m
-2025-05-13T13:36:08.0433866Z [36;1m    local response=$(curl -s -H "Authorization: ***" \[0m
-2025-05-13T13:36:08.0435438Z [36;1m      -H "Accept: application/vnd.github+json" \[0m
-2025-05-13T13:36:08.0437420Z [36;1m      "https://api.github.com/users/Faturrachman-dev/events?per_page=100&page=$page")[0m
-2025-05-13T13:36:08.0439219Z [36;1m    [0m
-2025-05-13T13:36:08.0440360Z [36;1m    # Check if we got a valid response (should be a JSON array)[0m
-2025-05-13T13:36:08.0442353Z [36;1m    if ! echo "$response" | jq -e 'if type=="array" then true else false end' > /dev/null; then[0m
-2025-05-13T13:36:08.0444738Z [36;1m      echo "Warning: Invalid response format from API. Expected JSON array."[0m
-2025-05-13T13:36:08.0446712Z [36;1m      echo "Response sample: $(echo "$response" | head -c 100)..."[0m
-2025-05-13T13:36:08.0448193Z [36;1m      break[0m
-2025-05-13T13:36:08.0449062Z [36;1m    fi[0m
-2025-05-13T13:36:08.0449871Z [36;1m    [0m
-2025-05-13T13:36:08.0450755Z [36;1m    # Check if array is empty[0m
-2025-05-13T13:36:08.0452275Z [36;1m    if [ "$(echo "$response" | jq 'length')" -eq 0 ]; then[0m
-2025-05-13T13:36:08.0453793Z [36;1m      echo "No more events found."[0m
-2025-05-13T13:36:08.0455063Z [36;1m      break[0m
-2025-05-13T13:36:08.0455928Z [36;1m    fi[0m
-2025-05-13T13:36:08.0456739Z [36;1m    [0m
-2025-05-13T13:36:08.0457598Z [36;1m    # Process each event[0m
-2025-05-13T13:36:08.0458901Z [36;1m    local event_count=$(echo "$response" | jq 'length')[0m
-2025-05-13T13:36:08.0460590Z [36;1m    echo "Processing $event_count events from page $page..."[0m
-2025-05-13T13:36:08.0462045Z [36;1m    [0m
-2025-05-13T13:36:08.0463005Z [36;1m    for i in $(seq 0 $((event_count - 1))); do[0m
-2025-05-13T13:36:08.0464419Z [36;1m      # Extract event properties[0m
-2025-05-13T13:36:08.0466005Z [36;1m      local event_data=$(echo "$response" | jq --arg i "$i" '.[$i|tonumber]')[0m
-2025-05-13T13:36:08.0468052Z [36;1m      local event_type=$(echo "$event_data" | jq -r '.type // "unknown"')[0m
-2025-05-13T13:36:08.0469967Z [36;1m      local event_date=$(echo "$event_data" | jq -r '.created_at // ""')[0m
-2025-05-13T13:36:08.0471475Z [36;1m      [0m
-2025-05-13T13:36:08.0472520Z [36;1m      # Debug output for the first event of each page[0m
-2025-05-13T13:36:08.0473961Z [36;1m      if [ "$i" -eq 0 ]; then[0m
-2025-05-13T13:36:08.0475354Z [36;1m        echo "Sample event: type=$event_type, date=$event_date"[0m
-2025-05-13T13:36:08.0476743Z [36;1m      fi[0m
-2025-05-13T13:36:08.0477527Z [36;1m      [0m
-2025-05-13T13:36:08.0478433Z [36;1m      # Skip events outside our date range[0m
-2025-05-13T13:36:08.0480214Z [36;1m      if [ -z "$event_date" ] || [ "$event_date" \< "$since_date" ] || [ "$event_date" \> "$until_date" ]; then[0m
-2025-05-13T13:36:08.0481921Z [36;1m        continue[0m
-2025-05-13T13:36:08.0482818Z [36;1m      fi[0m
-2025-05-13T13:36:08.0483687Z [36;1m      [0m
-2025-05-13T13:36:08.0484527Z [36;1m      # Count by event type[0m
-2025-05-13T13:36:08.0485599Z [36;1m      case "$event_type" in[0m
-2025-05-13T13:36:08.0486651Z [36;1m        "PushEvent")[0m
-2025-05-13T13:36:08.0487708Z [36;1m          push_events=$((push_events + 1))[0m
-2025-05-13T13:36:08.0489279Z [36;1m          local commit_size=$(echo "$event_data" | jq '.payload.size // 0')[0m
-2025-05-13T13:36:08.0490897Z [36;1m          # Handle non-numeric responses[0m
-2025-05-13T13:36:08.0492152Z [36;1m          if [[ "$commit_size" =~ ^[0-9]+$ ]]; then[0m
-2025-05-13T13:36:08.0493633Z [36;1m            total_commits=$((total_commits + commit_size))[0m
-2025-05-13T13:36:08.0494907Z [36;1m          fi[0m
-2025-05-13T13:36:08.0495718Z [36;1m          ;;[0m
-2025-05-13T13:36:08.0496859Z [36;1m        "CreateEvent") create_events=$((create_events + 1)) ;;[0m
-2025-05-13T13:36:08.0498513Z [36;1m        "IssuesEvent") issues_events=$((issues_events + 1)) ;;[0m
-2025-05-13T13:36:08.0500291Z [36;1m        "IssueCommentEvent") issue_comments=$((issue_comments + 1)) ;;[0m
-2025-05-13T13:36:08.0502056Z [36;1m        "PullRequestEvent") pr_events=$((pr_events + 1)) ;;[0m
-2025-05-13T13:36:08.0503901Z [36;1m        "PullRequestReviewEvent") pr_reviews=$((pr_reviews + 1)) ;;[0m
-2025-05-13T13:36:08.0506131Z [36;1m        "PullRequestReviewCommentEvent") pr_review_comments=$((pr_review_comments + 1)) ;;[0m
-2025-05-13T13:36:08.0508420Z [36;1m        "CommitCommentEvent") commit_comments=$((commit_comments + 1)) ;;[0m
-2025-05-13T13:36:08.0510177Z [36;1m        "ForkEvent") fork_events=$((fork_events + 1)) ;;[0m
-2025-05-13T13:36:08.0511693Z [36;1m        "WatchEvent") watch_events=$((watch_events + 1)) ;;[0m
-2025-05-13T13:36:08.0513431Z [36;1m        "ReleaseEvent") release_events=$((release_events + 1)) ;;[0m
-2025-05-13T13:36:08.0515145Z [36;1m        "PublicEvent") public_events=$((public_events + 1)) ;;[0m
-2025-05-13T13:36:08.0516491Z [36;1m      esac[0m
-2025-05-13T13:36:08.0517293Z [36;1m    done[0m
-2025-05-13T13:36:08.0518054Z [36;1m    [0m
-2025-05-13T13:36:08.0518889Z [36;1m    # Check if there are more pages[0m
-2025-05-13T13:36:08.0521165Z [36;1m    local link_header=$(curl -s -I -o /dev/null -w '%{http_code}\n' -H "Authorization: ***" \[0m
-2025-05-13T13:36:08.0523079Z [36;1m      -H "Accept: application/vnd.github+json" \[0m
-2025-05-13T13:36:08.0525268Z [36;1m      "https://api.github.com/users/Faturrachman-dev/events?per_page=100&page=$((page+1))")[0m
-2025-05-13T13:36:08.0527107Z [36;1m    [0m
-2025-05-13T13:36:08.0528186Z [36;1m    if [ "$link_header" != "200" ] || [ "$event_count" -lt 100 ]; then[0m
-2025-05-13T13:36:08.0529632Z [36;1m      echo "No more pages to fetch."[0m
-2025-05-13T13:36:08.0530742Z [36;1m      break[0m
-2025-05-13T13:36:08.0531543Z [36;1m    fi[0m
-2025-05-13T13:36:08.0532289Z [36;1m    [0m
-2025-05-13T13:36:08.0533186Z [36;1m    # Add a small delay to avoid rate limiting[0m
-2025-05-13T13:36:08.0534462Z [36;1m    sleep 1[0m
-2025-05-13T13:36:08.0535270Z [36;1m  done[0m
-2025-05-13T13:36:08.0536017Z [36;1m  [0m
-2025-05-13T13:36:08.0536827Z [36;1m  # Calculate total contributions[0m
-2025-05-13T13:36:08.0540043Z [36;1m  local other_contributions=$((create_events + issues_events + issue_comments + pr_events + pr_reviews + pr_review_comments + commit_comments + fork_events + watch_events + release_events + public_events))[0m
-2025-05-13T13:36:08.0543708Z [36;1m  local total_contributions=$((total_commits + other_contributions))[0m
-2025-05-13T13:36:08.0545176Z [36;1m  [0m
-2025-05-13T13:36:08.0545944Z [36;1m  # Output result summary[0m
-2025-05-13T13:36:08.0547380Z [36;1m  echo "Contribution summary for period $since_date to $until_date:"[0m
-2025-05-13T13:36:08.0549208Z [36;1m  echo "  Push events: $push_events (with $total_commits commits)"[0m
-2025-05-13T13:36:08.0550719Z [36;1m  echo "  Create events: $create_events"[0m
-2025-05-13T13:36:08.0551950Z [36;1m  echo "  Issues events: $issues_events"[0m
-2025-05-13T13:36:08.0553211Z [36;1m  echo "  Issue comments: $issue_comments"[0m
-2025-05-13T13:36:08.0554504Z [36;1m  echo "  PR events: $pr_events"[0m
-2025-05-13T13:36:08.0555634Z [36;1m  echo "  PR reviews: $pr_reviews"[0m
-2025-05-13T13:36:08.0556896Z [36;1m  echo "  PR review comments: $pr_review_comments"[0m
-2025-05-13T13:36:08.0558245Z [36;1m  echo "  Commit comments: $commit_comments"[0m
-2025-05-13T13:36:08.0559475Z [36;1m  echo "  Fork events: $fork_events"[0m
-2025-05-13T13:36:08.0560655Z [36;1m  echo "  Watch events: $watch_events"[0m
-2025-05-13T13:36:08.0561878Z [36;1m  echo "  Release events: $release_events"[0m
-2025-05-13T13:36:08.0563104Z [36;1m  echo "  Public events: $public_events"[0m
-2025-05-13T13:36:08.0564536Z [36;1m  echo "  Total contributions: $total_contributions"[0m
-2025-05-13T13:36:08.0565754Z [36;1m  [0m
-2025-05-13T13:36:08.0566812Z [36;1m  # Return values using echo (can be captured by the caller)[0m
-2025-05-13T13:36:08.0568536Z [36;1m  echo "$total_contributions $total_commits $other_contributions"[0m
-2025-05-13T13:36:08.0569913Z [36;1m}[0m
-2025-05-13T13:36:08.0570624Z [36;1m[0m
-2025-05-13T13:36:08.0571416Z [36;1m# Count yesterday's contributions[0m
-2025-05-13T13:36:08.0573085Z [36;1mYESTERDAY_END_UTC=$(date -u -d "$YESTERDAY_START 23:59:59 +7 hours" +%Y-%m-%dT%H:%M:%SZ)[0m
-2025-05-13T13:36:08.0575559Z [36;1mecho "Counting yesterday's contributions from $YESTERDAY_START_UTC to $YESTERDAY_END_UTC"[0m
-2025-05-13T13:36:08.0577314Z [36;1m[0m
-2025-05-13T13:36:08.0578109Z [36;1m# Capture function return values[0m
-2025-05-13T13:36:08.0579760Z [36;1mTODAY_RESULTS=$(count_contributions "$YESTERDAY_START_UTC" "$YESTERDAY_END_UTC")[0m
-2025-05-13T13:36:08.0582086Z [36;1mread -r TODAY_CONTRIBUTIONS TODAY_COMMITS OTHER_TODAY_CONTRIBUTIONS <<< "$TODAY_RESULTS"[0m
-2025-05-13T13:36:08.0583887Z [36;1m[0m
-2025-05-13T13:36:08.0584794Z [36;1m# Export values to GitHub Actions environment[0m
-2025-05-13T13:36:08.0586349Z [36;1mecho "TODAY_CONTRIBUTIONS=$TODAY_CONTRIBUTIONS" >> $GITHUB_ENV[0m
-2025-05-13T13:36:08.0587974Z [36;1mecho "TODAY_COMMITS=$TODAY_COMMITS" >> $GITHUB_ENV[0m
-2025-05-13T13:36:08.0589743Z [36;1mecho "OTHER_TODAY_CONTRIBUTIONS=$OTHER_TODAY_CONTRIBUTIONS" >> $GITHUB_ENV[0m
-2025-05-13T13:36:08.0591431Z [36;1m[0m
-2025-05-13T13:36:08.0592253Z [36;1m# Get previous month data from README[0m
-2025-05-13T13:36:08.0593597Z [36;1mPREV_MONTH_CONTRIBUTIONS=0[0m
-2025-05-13T13:36:08.0594631Z [36;1mPREV_MONTH_COMMITS=0[0m
-2025-05-13T13:36:08.0595542Z [36;1m[0m
-2025-05-13T13:36:08.0596591Z [36;1mif grep -q "<!-- MONTH_COMMITS:" faturrachman-dev/README.md; then[0m
-2025-05-13T13:36:08.0598983Z [36;1m  PREV_MONTH_COMMITS=$(grep "<!-- MONTH_COMMITS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_COMMITS: \([0-9]\+\) .* -->/\1/')[0m
-2025-05-13T13:36:08.0601943Z [36;1m  PREV_MONTH=$(grep "<!-- MONTH_COMMITS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_COMMITS: [0-9]\+ \(.*\) -->/\1/')[0m
-2025-05-13T13:36:08.0603927Z [36;1mfi[0m
-2025-05-13T13:36:08.0604641Z [36;1m[0m
-2025-05-13T13:36:08.0605760Z [36;1mif grep -q "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md; then[0m
-2025-05-13T13:36:08.0608492Z [36;1m  PREV_MONTH_CONTRIBUTIONS=$(grep "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_CONTRIBUTIONS: \([0-9]\+\) .* -->/\1/')[0m
-2025-05-13T13:36:08.0611869Z [36;1m  PREV_MONTH_CONTR=$(grep "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_CONTRIBUTIONS: [0-9]\+ \(.*\) -->/\1/')[0m
-2025-05-13T13:36:08.0614089Z [36;1mfi[0m
-2025-05-13T13:36:08.0614789Z [36;1m[0m
-2025-05-13T13:36:08.0615615Z [36;1m# Count the entire month's contributions[0m
-2025-05-13T13:36:08.0616993Z [36;1mecho "Counting contributions for the entire month..."[0m
-2025-05-13T13:36:08.0618824Z [36;1mMONTH_END_UTC=$(date -u -d "$(date +%Y-%m-01) +1 month -1 day 23:59:59 +7 hours" +%Y-%m-%dT%H:%M:%SZ)[0m
-2025-05-13T13:36:08.0620407Z [36;1m[0m
-2025-05-13T13:36:08.0621259Z [36;1m# Capture function return values for month[0m
-2025-05-13T13:36:08.0622828Z [36;1mMONTH_RESULTS=$(count_contributions "$MONTH_START_UTC" "$MONTH_END_UTC")[0m
-2025-05-13T13:36:08.0624828Z [36;1mread -r MONTH_ALL COMMITS_MONTH_ALL OTHER_MONTH_ALL <<< "$MONTH_RESULTS"[0m
-2025-05-13T13:36:08.0626252Z [36;1m[0m
-2025-05-13T13:36:08.0627005Z [36;1m# Determine final month totals[0m
-2025-05-13T13:36:08.0628525Z [36;1mif [[ "$PREV_MONTH" != "$CURRENT_MONTH" || "$PREV_MONTH_CONTR" != "$CURRENT_MONTH" ]]; then[0m
-2025-05-13T13:36:08.0630338Z [36;1m  echo "New month detected or first run, using fresh counts"[0m
-2025-05-13T13:36:08.0631691Z [36;1m  MONTH_CONTRIBUTIONS=$MONTH_ALL[0m
-2025-05-13T13:36:08.0632782Z [36;1m  MONTH_COMMITS=$COMMITS_MONTH_ALL[0m
-2025-05-13T13:36:08.0633874Z [36;1melse[0m
-2025-05-13T13:36:08.0635050Z [36;1m  echo "Same month, using previous counts plus yesterday's contributions"[0m
-2025-05-13T13:36:08.0636695Z [36;1m  # Use the stored counts and add yesterday's to them[0m
-2025-05-13T13:36:08.0638317Z [36;1m  MONTH_CONTRIBUTIONS=$((PREV_MONTH_CONTRIBUTIONS + TODAY_CONTRIBUTIONS))[0m
-2025-05-13T13:36:08.0640005Z [36;1m  MONTH_COMMITS=$((PREV_MONTH_COMMITS + TODAY_COMMITS))[0m
-2025-05-13T13:36:08.0641215Z [36;1mfi[0m
-2025-05-13T13:36:08.0641892Z [36;1m[0m
-2025-05-13T13:36:08.0642803Z [36;1m# Export month values to GitHub Actions environment[0m
-2025-05-13T13:36:08.0644518Z [36;1mecho "MONTH_CONTRIBUTIONS=$MONTH_CONTRIBUTIONS" >> $GITHUB_ENV[0m
-2025-05-13T13:36:08.0646081Z [36;1mecho "MONTH_COMMITS=$MONTH_COMMITS" >> $GITHUB_ENV[0m
-2025-05-13T13:36:08.0647472Z [36;1mecho "CURRENT_MONTH=$CURRENT_MONTH" >> $GITHUB_ENV[0m
-2025-05-13T13:36:08.0648616Z [36;1m[0m
-2025-05-13T13:36:08.0649334Z [36;1mecho "Final Summary:"[0m
-2025-05-13T13:36:08.0650404Z [36;1mecho "  Yesterday's commits: $TODAY_COMMITS"[0m
-2025-05-13T13:36:08.0651913Z [36;1mecho "  Yesterday's other contributions: $OTHER_TODAY_CONTRIBUTIONS"[0m
-2025-05-13T13:36:08.0653987Z [36;1mecho "  Yesterday's total contributions: $TODAY_CONTRIBUTIONS"[0m
-2025-05-13T13:36:08.0716013Z [36;1mecho "  This month's commits: $MONTH_COMMITS"[0m
-2025-05-13T13:36:08.0717744Z [36;1mecho "  This month's total contributions: $MONTH_CONTRIBUTIONS"[0m
-2025-05-13T13:36:08.0746350Z shell: /usr/bin/bash -e {0}
-2025-05-13T13:36:08.0747377Z env:
-2025-05-13T13:36:08.0748637Z   COMMIT_COUNTER_TOKEN: ***
-2025-05-13T13:36:08.0749665Z ##[endgroup]
-2025-05-13T13:36:08.0835684Z Counting yesterday's contributions since: 2025-05-12T08:00:00Z (00:00 WIB yesterday)
-2025-05-13T13:36:08.0871930Z Counting this month's contributions since: 2025-05-01T08:00:00Z (start of 2025-05)
-2025-05-13T13:36:08.0887215Z Counting yesterday's contributions from 2025-05-12T08:00:00Z to 2025-05-12T17:59:59Z
-2025-05-13T13:36:09.4359956Z Counting contributions for the entire month...
-2025-05-13T13:36:10.8389983Z New month detected or first run, using fresh counts
-2025-05-13T13:36:10.8391042Z Final Summary:
-2025-05-13T13:36:10.8395347Z   Yesterday's commits: contributions
-2025-05-13T13:36:10.8396420Z   Yesterday's other contributions: from 2025-05-12T08:00:00Z to 2025-05-12T17:59:59Z...
-2025-05-13T13:36:10.8397481Z   Yesterday's total contributions: Fetching
-2025-05-13T13:36:10.8398214Z   This month's commits: contributions
-2025-05-13T13:36:10.8398872Z   This month's total contributions: Fetching
-2025-05-13T13:36:10.8432817Z ##[group]Run # Update the placeholder in the comment line for yesterday's commits
-2025-05-13T13:36:10.8433721Z [36;1m# Update the placeholder in the comment line for yesterday's commits[0m
-2025-05-13T13:36:10.8434232Z [36;1mif grep -q "<!-- TODAY_COMMITS:" faturrachman-dev/README.md; then[0m
-2025-05-13T13:36:10.8434784Z [36;1m  sed -i "s/<!-- TODAY_COMMITS: [0-9]\+ -->/<!-- TODAY_COMMITS: $TODAY_COMMITS -->/g" faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8435231Z [36;1melse[0m
-2025-05-13T13:36:10.8435564Z [36;1m  echo "<!-- TODAY_COMMITS: $TODAY_COMMITS -->" >> faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8436409Z [36;1m  echo "![Yesterday's Commits](https://img.shields.io/badge/Yesterday's%20Commits-$TODAY_COMMITS-blue)" >> faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8437013Z [36;1mfi[0m
-2025-05-13T13:36:10.8437273Z [36;1m# Update the badge line for yesterday's commits[0m
-2025-05-13T13:36:10.8437778Z [36;1mif grep -q "Yesterday's%20Commits-[0-9]\+-blue" faturrachman-dev/README.md; then[0m
-2025-05-13T13:36:10.8438386Z [36;1m  sed -i "s/\(Yesterday's%20Commits-\)[0-9]\+\(-blue\)/\1$TODAY_COMMITS\2/" faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8438826Z [36;1mfi[0m
-2025-05-13T13:36:10.8439027Z [36;1m[0m
-2025-05-13T13:36:10.8439266Z [36;1m# Add yesterday's total contributions[0m
-2025-05-13T13:36:10.8439682Z [36;1mif grep -q "<!-- TODAY_CONTRIBUTIONS:" faturrachman-dev/README.md; then[0m
-2025-05-13T13:36:10.8440310Z [36;1m  sed -i "s/<!-- TODAY_CONTRIBUTIONS: [0-9]\+ -->/<!-- TODAY_CONTRIBUTIONS: $TODAY_CONTRIBUTIONS -->/g" faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8440828Z [36;1melse[0m
-2025-05-13T13:36:10.8441210Z [36;1m  echo "<!-- TODAY_CONTRIBUTIONS: $TODAY_CONTRIBUTIONS -->" >> faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8442049Z [36;1m  echo "![Yesterday's Contributions](https://img.shields.io/badge/Yesterday's%20Contributions-$TODAY_CONTRIBUTIONS-purple)" >> faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8442707Z [36;1mfi[0m
-2025-05-13T13:36:10.8443002Z [36;1m# Update the badge line for yesterday's contributions[0m
-2025-05-13T13:36:10.8443756Z [36;1mif grep -q "Yesterday's%20Contributions-[0-9]\+-purple" faturrachman-dev/README.md; then[0m
-2025-05-13T13:36:10.8444452Z [36;1m  sed -i "s/\(Yesterday's%20Contributions-\)[0-9]\+\(-purple\)/\1$TODAY_CONTRIBUTIONS\2/" faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8444930Z [36;1mfi[0m
-2025-05-13T13:36:10.8445131Z [36;1m[0m
-2025-05-13T13:36:10.8445435Z [36;1m# Update the placeholder in the comment line for monthly commits[0m
-2025-05-13T13:36:10.8445897Z [36;1mif grep -q "<!-- MONTH_COMMITS:" faturrachman-dev/README.md; then[0m
-2025-05-13T13:36:10.8446464Z [36;1m  sed -i "s/<!-- MONTH_COMMITS: [0-9]\+ .* -->/<!-- MONTH_COMMITS: $MONTH_COMMITS $CURRENT_MONTH -->/g" faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8446939Z [36;1melse[0m
-2025-05-13T13:36:10.8447326Z [36;1m  echo "<!-- MONTH_COMMITS: $MONTH_COMMITS $CURRENT_MONTH -->" >> faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8448049Z [36;1m  echo "![This Month's Commits](https://img.shields.io/badge/This%20Month's%20Commits-$MONTH_COMMITS-green)" >> faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8448860Z [36;1mfi[0m
-2025-05-13T13:36:10.8449118Z [36;1m# Update the badge line for monthly commits[0m
-2025-05-13T13:36:10.8449577Z [36;1mif grep -q "This%20Month's%20Commits-[0-9]\+-green" faturrachman-dev/README.md; then[0m
-2025-05-13T13:36:10.8450161Z [36;1m  sed -i "s/\(This%20Month's%20Commits-\)[0-9]\+\(-green\)/\1$MONTH_COMMITS\2/" faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8450590Z [36;1mfi[0m
-2025-05-13T13:36:10.8450793Z [36;1m[0m
-2025-05-13T13:36:10.8451019Z [36;1m# Add monthly total contributions[0m
-2025-05-13T13:36:10.8451408Z [36;1mif grep -q "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md; then[0m
-2025-05-13T13:36:10.8452225Z [36;1m  sed -i "s/<!-- MONTH_CONTRIBUTIONS: [0-9]\+ .* -->/<!-- MONTH_CONTRIBUTIONS: $MONTH_CONTRIBUTIONS $CURRENT_MONTH -->/g" faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8452810Z [36;1melse[0m
-2025-05-13T13:36:10.8453233Z [36;1m  echo "<!-- MONTH_CONTRIBUTIONS: $MONTH_CONTRIBUTIONS $CURRENT_MONTH -->" >> faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8454396Z [36;1m  echo "![This Month's Contributions](https://img.shields.io/badge/This%20Month's%20Contributions-$MONTH_CONTRIBUTIONS-orange)" >> faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8455041Z [36;1mfi[0m
-2025-05-13T13:36:10.8455314Z [36;1m# Update the badge line for monthly contributions[0m
-2025-05-13T13:36:10.8455805Z [36;1mif grep -q "This%20Month's%20Contributions-[0-9]\+-orange" faturrachman-dev/README.md; then[0m
-2025-05-13T13:36:10.8456462Z [36;1m  sed -i "s/\(This%20Month's%20Contributions-\)[0-9]\+\(-orange\)/\1$MONTH_CONTRIBUTIONS\2/" faturrachman-dev/README.md[0m
-2025-05-13T13:36:10.8456929Z [36;1mfi[0m
-2025-05-13T13:36:10.8481930Z shell: /usr/bin/bash -e {0}
-2025-05-13T13:36:10.8482207Z env:
-2025-05-13T13:36:10.8482443Z   TODAY_CONTRIBUTIONS: Fetching
-2025-05-13T13:36:10.8482718Z   TODAY_COMMITS: contributions
-2025-05-13T13:36:10.8483109Z   OTHER_TODAY_CONTRIBUTIONS: from 2025-05-12T08:00:00Z to 2025-05-12T17:59:59Z...
-2025-05-13T13:36:10.8483741Z   MONTH_CONTRIBUTIONS: Fetching
-2025-05-13T13:36:10.8484011Z   MONTH_COMMITS: contributions
-2025-05-13T13:36:10.8484271Z   CURRENT_MONTH: 2025-05
-2025-05-13T13:36:10.8484508Z ##[endgroup]
-2025-05-13T13:36:10.8807028Z ##[group]Run stefanzweifel/git-auto-commit-action@v4
-2025-05-13T13:36:10.8807439Z with:
-2025-05-13T13:36:10.8807714Z   commit_message: Update GitHub contribution statistics
-2025-05-13T13:36:10.8808063Z   repository: faturrachman-dev
-2025-05-13T13:36:10.8808329Z   file_pattern: .
-2025-05-13T13:36:10.8808565Z   commit_user_name: github-actions[bot]
-2025-05-13T13:36:10.8808956Z   commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
-2025-05-13T13:36:10.8809458Z   commit_author: Faturrachman-dev <Faturrachman-dev@users.noreply.github.com>
-2025-05-13T13:36:10.8809867Z   skip_dirty_check: false
-2025-05-13T13:36:10.8810113Z   skip_fetch: false
-2025-05-13T13:36:10.8810352Z   skip_checkout: false
-2025-05-13T13:36:10.8810590Z   disable_globbing: false
-2025-05-13T13:36:10.8810830Z   create_branch: false
-2025-05-13T13:36:10.8811059Z   internal_git_binary: git
-2025-05-13T13:36:10.8811296Z env:
-2025-05-13T13:36:10.8811501Z   TODAY_CONTRIBUTIONS: Fetching
-2025-05-13T13:36:10.8811800Z   TODAY_COMMITS: contributions
-2025-05-13T13:36:10.8812164Z   OTHER_TODAY_CONTRIBUTIONS: from 2025-05-12T08:00:00Z to 2025-05-12T17:59:59Z...
-2025-05-13T13:36:10.8812557Z   MONTH_CONTRIBUTIONS: Fetching
-2025-05-13T13:36:10.8812821Z   MONTH_COMMITS: contributions
-2025-05-13T13:36:10.8813065Z   CURRENT_MONTH: 2025-05
-2025-05-13T13:36:10.8813304Z ##[endgroup]
-2025-05-13T13:36:10.9046328Z Started: bash /home/runner/work/_actions/stefanzweifel/git-auto-commit-action/v4/entrypoint.sh
-2025-05-13T13:36:10.9088053Z INPUT_REPOSITORY value: faturrachman-dev
-2025-05-13T13:36:10.9088596Z INPUT_STATUS_OPTIONS: 
-2025-05-13T13:36:10.9089266Z INPUT_FILE_PATTERN: .
-2025-05-13T13:36:10.9141084Z INPUT_BRANCH value: 
-2025-05-13T13:36:11.2064315Z M	README.md
-2025-05-13T13:36:11.2064759Z Your branch is up to date with 'origin/main'.
-2025-05-13T13:36:11.2065931Z INPUT_ADD_OPTIONS: 
-2025-05-13T13:36:11.2066804Z INPUT_FILE_PATTERN: .
-2025-05-13T13:36:11.2108872Z INPUT_COMMIT_OPTIONS: 
-2025-05-13T13:36:11.2109889Z INPUT_COMMIT_USER_NAME: github-actions[bot]
-2025-05-13T13:36:11.2110812Z INPUT_COMMIT_USER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-2025-05-13T13:36:11.2111654Z INPUT_COMMIT_MESSAGE: Update GitHub contribution statistics
-2025-05-13T13:36:11.2112404Z INPUT_COMMIT_AUTHOR: Faturrachman-dev <Faturrachman-dev@users.noreply.github.com>
-2025-05-13T13:36:11.2154395Z [main db335e8] Update GitHub contribution statistics
-2025-05-13T13:36:11.2154876Z  Author: Faturrachman-dev <Faturrachman-dev@users.noreply.github.com>
-2025-05-13T13:36:11.2155285Z  1 file changed, 2 insertions(+), 2 deletions(-)
-2025-05-13T13:36:11.2174528Z INPUT_TAGGING_MESSAGE: 
-2025-05-13T13:36:11.2174983Z No tagging message supplied. No tag will be added.
-2025-05-13T13:36:11.2175437Z INPUT_PUSH_OPTIONS: 
-2025-05-13T13:36:11.7374295Z To https://github.com/Faturrachman-dev/faturrachman-dev
-2025-05-13T13:36:11.7374880Z    34eed76..db335e8  main -> main
-2025-05-13T13:36:11.7537505Z Post job cleanup.
-2025-05-13T13:36:11.8482462Z [command]/usr/bin/git version
-2025-05-13T13:36:11.8522361Z git version 2.49.0
-2025-05-13T13:36:11.8570965Z Temporarily overriding HOME='/home/runner/work/_temp/cc008e5d-66e8-4a98-a553-b17a5d2e9ae0' before making global git config changes
-2025-05-13T13:36:11.8572146Z Adding repository directory to the temporary git global config as a safe directory
-2025-05-13T13:36:11.8577092Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/faturrachman-dev/faturrachman-dev/faturrachman-dev
-2025-05-13T13:36:11.8618350Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
-2025-05-13T13:36:11.8651048Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
-2025-05-13T13:36:11.8879965Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
-2025-05-13T13:36:11.8900858Z http.https://github.com/.extraheader
-2025-05-13T13:36:11.8914119Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
-2025-05-13T13:36:11.8945337Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
-2025-05-13T13:36:11.9289501Z Cleaning up orphan processes
+2025-05-13T13:45:03.5143355Z Current runner version: '2.323.0'
+2025-05-13T13:45:03.5178253Z ##[group]Operating System
+2025-05-13T13:45:03.5179310Z Ubuntu
+2025-05-13T13:45:03.5180193Z 24.04.2
+2025-05-13T13:45:03.5180905Z LTS
+2025-05-13T13:45:03.5181717Z ##[endgroup]
+2025-05-13T13:45:03.5182588Z ##[group]Runner Image
+2025-05-13T13:45:03.5183466Z Image: ubuntu-24.04
+2025-05-13T13:45:03.5184531Z Version: 20250511.1.0
+2025-05-13T13:45:03.5186383Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250511.1/images/ubuntu/Ubuntu2404-Readme.md
+2025-05-13T13:45:03.5188769Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250511.1
+2025-05-13T13:45:03.5190434Z ##[endgroup]
+2025-05-13T13:45:03.5191213Z ##[group]Runner Image Provisioner
+2025-05-13T13:45:03.5192175Z 2.0.437.1
+2025-05-13T13:45:03.5192959Z ##[endgroup]
+2025-05-13T13:45:03.5194879Z ##[group]GITHUB_TOKEN Permissions
+2025-05-13T13:45:03.5197321Z Contents: write
+2025-05-13T13:45:03.5198345Z Metadata: read
+2025-05-13T13:45:03.5199415Z ##[endgroup]
+2025-05-13T13:45:03.5202775Z Secret source: Actions
+2025-05-13T13:45:03.5204137Z Prepare workflow directory
+2025-05-13T13:45:03.5660383Z Prepare all required actions
+2025-05-13T13:45:03.5716363Z Getting action download info
+2025-05-13T13:45:04.0160767Z ##[group]Download immutable action package 'actions/checkout@v4'
+2025-05-13T13:45:04.0161846Z Version: 4.2.2
+2025-05-13T13:45:04.0162897Z Digest: sha256:ccb2698953eaebd21c7bf6268a94f9c26518a7e38e27e0b83c1fe1ad049819b1
+2025-05-13T13:45:04.0164376Z Source commit SHA: 11bd71901bbe5b1630ceea73d27597364c9af683
+2025-05-13T13:45:04.0165200Z ##[endgroup]
+2025-05-13T13:45:04.4799552Z Download action repository 'stefanzweifel/git-auto-commit-action@v4' (SHA:3ea6ae190baf489ba007f7c92608f33ce20ef04a)
+2025-05-13T13:45:04.7431881Z Complete job name: update
+2025-05-13T13:45:04.8106443Z ##[group]Run actions/checkout@v4
+2025-05-13T13:45:04.8107279Z with:
+2025-05-13T13:45:04.8107669Z   fetch-depth: 0
+2025-05-13T13:45:04.8108151Z   repository: Faturrachman-dev/faturrachman-dev
+2025-05-13T13:45:04.8108750Z   path: faturrachman-dev
+2025-05-13T13:45:04.8109474Z   token: ***
+2025-05-13T13:45:04.8109868Z   ssh-strict: true
+2025-05-13T13:45:04.8110275Z   ssh-user: git
+2025-05-13T13:45:04.8110688Z   persist-credentials: true
+2025-05-13T13:45:04.8111146Z   clean: true
+2025-05-13T13:45:04.8111559Z   sparse-checkout-cone-mode: true
+2025-05-13T13:45:04.8112048Z   fetch-tags: false
+2025-05-13T13:45:04.8112459Z   show-progress: true
+2025-05-13T13:45:04.8112883Z   lfs: false
+2025-05-13T13:45:04.8113260Z   submodules: false
+2025-05-13T13:45:04.8113743Z   set-safe-directory: true
+2025-05-13T13:45:04.8114612Z ##[endgroup]
+2025-05-13T13:45:06.5416320Z Syncing repository: Faturrachman-dev/faturrachman-dev
+2025-05-13T13:45:06.5417833Z ##[group]Getting Git version info
+2025-05-13T13:45:06.5418473Z Working directory is '/home/runner/work/faturrachman-dev/faturrachman-dev/faturrachman-dev'
+2025-05-13T13:45:06.5419238Z [command]/usr/bin/git version
+2025-05-13T13:45:06.6611812Z git version 2.49.0
+2025-05-13T13:45:06.6684379Z ##[endgroup]
+2025-05-13T13:45:06.6705469Z Temporarily overriding HOME='/home/runner/work/_temp/6b7bf69a-92be-485f-b0c5-e2ac57f15743' before making global git config changes
+2025-05-13T13:45:06.6710905Z Adding repository directory to the temporary git global config as a safe directory
+2025-05-13T13:45:06.6711749Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/faturrachman-dev/faturrachman-dev/faturrachman-dev
+2025-05-13T13:45:06.6787891Z ##[group]Initializing the repository
+2025-05-13T13:45:06.6792977Z [command]/usr/bin/git init /home/runner/work/faturrachman-dev/faturrachman-dev/faturrachman-dev
+2025-05-13T13:45:06.7212514Z hint: Using 'master' as the name for the initial branch. This default branch name
+2025-05-13T13:45:06.7213442Z hint: is subject to change. To configure the initial branch name to use in all
+2025-05-13T13:45:06.7214175Z hint: of your new repositories, which will suppress this warning, call:
+2025-05-13T13:45:06.7214597Z hint:
+2025-05-13T13:45:06.7215242Z hint: 	git config --global init.defaultBranch <name>
+2025-05-13T13:45:06.7215599Z hint:
+2025-05-13T13:45:06.7215961Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2025-05-13T13:45:06.7216510Z hint: 'development'. The just-created branch can be renamed via this command:
+2025-05-13T13:45:06.7216931Z hint:
+2025-05-13T13:45:06.7217165Z hint: 	git branch -m <name>
+2025-05-13T13:45:06.7308427Z Initialized empty Git repository in /home/runner/work/faturrachman-dev/faturrachman-dev/faturrachman-dev/.git/
+2025-05-13T13:45:06.7322394Z [command]/usr/bin/git remote add origin https://github.com/Faturrachman-dev/faturrachman-dev
+2025-05-13T13:45:06.7407594Z ##[endgroup]
+2025-05-13T13:45:06.7408461Z ##[group]Disabling automatic garbage collection
+2025-05-13T13:45:06.7413002Z [command]/usr/bin/git config --local gc.auto 0
+2025-05-13T13:45:06.7441471Z ##[endgroup]
+2025-05-13T13:45:06.7442289Z ##[group]Setting up auth
+2025-05-13T13:45:06.7448933Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-05-13T13:45:06.7478755Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-05-13T13:45:06.8980137Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-05-13T13:45:06.9009461Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-05-13T13:45:06.9233293Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2025-05-13T13:45:06.9269616Z ##[endgroup]
+2025-05-13T13:45:06.9270525Z ##[group]Fetching the repository
+2025-05-13T13:45:06.9279018Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2025-05-13T13:45:07.4614495Z From https://github.com/Faturrachman-dev/faturrachman-dev
+2025-05-13T13:45:07.4616125Z  * [new branch]      main       -> origin/main
+2025-05-13T13:45:07.4616853Z  * [new tag]         persona    -> persona
+2025-05-13T13:45:07.4773153Z [command]/usr/bin/git branch --list --remote origin/main
+2025-05-13T13:45:07.4796020Z   origin/main
+2025-05-13T13:45:07.4805164Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2025-05-13T13:45:07.4825779Z ddcf707a051cc3b074f01dc3a6580bacf6b66793
+2025-05-13T13:45:07.4831228Z ##[endgroup]
+2025-05-13T13:45:07.4831684Z ##[group]Determining the checkout info
+2025-05-13T13:45:07.4832366Z ##[endgroup]
+2025-05-13T13:45:07.4836931Z [command]/usr/bin/git sparse-checkout disable
+2025-05-13T13:45:07.4917846Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2025-05-13T13:45:07.4944095Z ##[group]Checking out the ref
+2025-05-13T13:45:07.4948496Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2025-05-13T13:45:07.5058767Z Switched to a new branch 'main'
+2025-05-13T13:45:07.5061756Z branch 'main' set up to track 'origin/main'.
+2025-05-13T13:45:07.5069548Z ##[endgroup]
+2025-05-13T13:45:07.5105336Z [command]/usr/bin/git log -1 --format=%H
+2025-05-13T13:45:07.5128760Z ddcf707a051cc3b074f01dc3a6580bacf6b66793
+2025-05-13T13:45:07.5306278Z ##[group]Run sudo apt-get install -y jq
+2025-05-13T13:45:07.5306727Z [36;1msudo apt-get install -y jq[0m
+2025-05-13T13:45:07.5805328Z shell: /usr/bin/bash -e {0}
+2025-05-13T13:45:07.5805651Z ##[endgroup]
+2025-05-13T13:45:08.7230817Z Reading package lists...
+2025-05-13T13:45:08.8749129Z Building dependency tree...
+2025-05-13T13:45:08.8802796Z Reading state information...
+2025-05-13T13:45:09.2303278Z jq is already the newest version (1.7.1-3build1).
+2025-05-13T13:45:09.2304159Z 0 upgraded, 0 newly installed, 0 to remove and 2 not upgraded.
+2025-05-13T13:45:09.2366873Z ##[group]Run # Calculate the start of yesterday in WIB (UTC+7)
+2025-05-13T13:45:09.2367986Z [36;1m# Calculate the start of yesterday in WIB (UTC+7)[0m
+2025-05-13T13:45:09.2368431Z [36;1mYESTERDAY_START=$(TZ=Asia/Jakarta date -d "yesterday" +%Y-%m-%d)[0m
+2025-05-13T13:45:09.2368927Z [36;1mYESTERDAY_START_UTC=$(date -u -d "$YESTERDAY_START 00:00:00 -7 hours" +%Y-%m-%dT%H:%M:%SZ)[0m
+2025-05-13T13:45:09.2369489Z [36;1mecho "Counting yesterday's contributions since: $YESTERDAY_START_UTC (00:00 WIB yesterday)"[0m
+2025-05-13T13:45:09.2369903Z [36;1m[0m
+2025-05-13T13:45:09.2370132Z [36;1m# Calculate the start of the current month in WIB[0m
+2025-05-13T13:45:09.2370455Z [36;1mMONTH_START=$(TZ=Asia/Jakarta date +%Y-%m-01)[0m
+2025-05-13T13:45:09.2370843Z [36;1mMONTH_START_UTC=$(date -u -d "$MONTH_START 00:00:00 -7 hours" +%Y-%m-%dT%H:%M:%SZ)[0m
+2025-05-13T13:45:09.2371231Z [36;1mCURRENT_MONTH=$(TZ=Asia/Jakarta date +%Y-%m)[0m
+2025-05-13T13:45:09.2371715Z [36;1mecho "Counting this month's contributions since: $MONTH_START_UTC (start of $CURRENT_MONTH)"[0m
+2025-05-13T13:45:09.2372123Z [36;1m[0m
+2025-05-13T13:45:09.2372394Z [36;1m# Function to count GitHub events directly using the GitHub API[0m
+2025-05-13T13:45:09.2372736Z [36;1mcount_contributions() {[0m
+2025-05-13T13:45:09.2372972Z [36;1m  local since_date="$1"[0m
+2025-05-13T13:45:09.2373201Z [36;1m  local until_date="$2"[0m
+2025-05-13T13:45:09.2373412Z [36;1m  [0m
+2025-05-13T13:45:09.2373686Z [36;1m  echo "Fetching contributions from $since_date to $until_date..."[0m
+2025-05-13T13:45:09.2374282Z [36;1m  [0m
+2025-05-13T13:45:09.2374463Z [36;1m  # Initialize counters[0m
+2025-05-13T13:45:09.2374699Z [36;1m  local push_events=0[0m
+2025-05-13T13:45:09.2374937Z [36;1m  local total_commits=0[0m
+2025-05-13T13:45:09.2375158Z [36;1m  local create_events=0[0m
+2025-05-13T13:45:09.2375388Z [36;1m  local issues_events=0[0m
+2025-05-13T13:45:09.2375610Z [36;1m  local issue_comments=0[0m
+2025-05-13T13:45:09.2375851Z [36;1m  local pr_events=0[0m
+2025-05-13T13:45:09.2376075Z [36;1m  local pr_reviews=0[0m
+2025-05-13T13:45:09.2376303Z [36;1m  local pr_review_comments=0[0m
+2025-05-13T13:45:09.2376566Z [36;1m  local commit_comments=0[0m
+2025-05-13T13:45:09.2376813Z [36;1m  local fork_events=0[0m
+2025-05-13T13:45:09.2377038Z [36;1m  local watch_events=0[0m
+2025-05-13T13:45:09.2377328Z [36;1m  local release_events=0[0m
+2025-05-13T13:45:09.2377591Z [36;1m  local public_events=0[0m
+2025-05-13T13:45:09.2377810Z [36;1m  [0m
+2025-05-13T13:45:09.2378046Z [36;1m  # Fetch and process GitHub events (up to 3 pages)[0m
+2025-05-13T13:45:09.2378335Z [36;1m  for page in {1..3}; do[0m
+2025-05-13T13:45:09.2378594Z [36;1m    echo "Fetching events page $page..."[0m
+2025-05-13T13:45:09.2378853Z [36;1m    [0m
+2025-05-13T13:45:09.2379115Z [36;1m    # Use -s for silent mode and capture the response in a variable[0m
+2025-05-13T13:45:09.2379776Z [36;1m    local response=$(curl -s -H "Authorization: ***" \[0m
+2025-05-13T13:45:09.2380137Z [36;1m      -H "Accept: application/vnd.github+json" \[0m
+2025-05-13T13:45:09.2380589Z [36;1m      "https://api.github.com/users/Faturrachman-dev/events?per_page=100&page=$page")[0m
+2025-05-13T13:45:09.2380985Z [36;1m    [0m
+2025-05-13T13:45:09.2381243Z [36;1m    # Check if we got a valid response (should be a JSON array)[0m
+2025-05-13T13:45:09.2381676Z [36;1m    if ! echo "$response" | jq -e 'if type=="array" then true else false end' > /dev/null; then[0m
+2025-05-13T13:45:09.2382160Z [36;1m      echo "Warning: Invalid response format from API. Expected JSON array."[0m
+2025-05-13T13:45:09.2382665Z [36;1m      echo "Response sample: $(echo "$response" | head -c 100)..."[0m
+2025-05-13T13:45:09.2382976Z [36;1m      break[0m
+2025-05-13T13:45:09.2383165Z [36;1m    fi[0m
+2025-05-13T13:45:09.2383347Z [36;1m    [0m
+2025-05-13T13:45:09.2383534Z [36;1m    # Check if array is empty[0m
+2025-05-13T13:45:09.2384508Z [36;1m    if [ "$(echo "$response" | jq 'length')" -eq 0 ]; then[0m
+2025-05-13T13:45:09.2384839Z [36;1m      echo "No more events found."[0m
+2025-05-13T13:45:09.2385200Z [36;1m      break[0m
+2025-05-13T13:45:09.2385390Z [36;1m    fi[0m
+2025-05-13T13:45:09.2385562Z [36;1m    [0m
+2025-05-13T13:45:09.2385752Z [36;1m    # Process each event[0m
+2025-05-13T13:45:09.2386041Z [36;1m    local event_count=$(echo "$response" | jq 'length')[0m
+2025-05-13T13:45:09.2386415Z [36;1m    echo "Processing $event_count events from page $page..."[0m
+2025-05-13T13:45:09.2386728Z [36;1m    [0m
+2025-05-13T13:45:09.2386936Z [36;1m    for i in $(seq 0 $((event_count - 1))); do[0m
+2025-05-13T13:45:09.2387223Z [36;1m      # Extract event properties[0m
+2025-05-13T13:45:09.2387579Z [36;1m      local event_data=$(echo "$response" | jq --arg i "$i" '.[$i|tonumber]')[0m
+2025-05-13T13:45:09.2388013Z [36;1m      local event_type=$(echo "$event_data" | jq -r '.type // "unknown"')[0m
+2025-05-13T13:45:09.2388437Z [36;1m      local event_date=$(echo "$event_data" | jq -r '.created_at // ""')[0m
+2025-05-13T13:45:09.2388759Z [36;1m      [0m
+2025-05-13T13:45:09.2388984Z [36;1m      # Debug output for the first event of each page[0m
+2025-05-13T13:45:09.2389282Z [36;1m      if [ "$i" -eq 0 ]; then[0m
+2025-05-13T13:45:09.2389583Z [36;1m        echo "Sample event: type=$event_type, date=$event_date"[0m
+2025-05-13T13:45:09.2389881Z [36;1m      fi[0m
+2025-05-13T13:45:09.2390058Z [36;1m      [0m
+2025-05-13T13:45:09.2390260Z [36;1m      # Skip events outside our date range[0m
+2025-05-13T13:45:09.2390667Z [36;1m      if [ -z "$event_date" ] || [ "$event_date" \< "$since_date" ] || [ "$event_date" \> "$until_date" ]; then[0m
+2025-05-13T13:45:09.2391056Z [36;1m        continue[0m
+2025-05-13T13:45:09.2391254Z [36;1m      fi[0m
+2025-05-13T13:45:09.2391433Z [36;1m      [0m
+2025-05-13T13:45:09.2391625Z [36;1m      # Count by event type[0m
+2025-05-13T13:45:09.2391863Z [36;1m      case "$event_type" in[0m
+2025-05-13T13:45:09.2392102Z [36;1m        "PushEvent")[0m
+2025-05-13T13:45:09.2392344Z [36;1m          push_events=$((push_events + 1))[0m
+2025-05-13T13:45:09.2392703Z [36;1m          local commit_size=$(echo "$event_data" | jq '.payload.size // 0')[0m
+2025-05-13T13:45:09.2393083Z [36;1m          # Handle non-numeric responses[0m
+2025-05-13T13:45:09.2393365Z [36;1m          if [[ "$commit_size" =~ ^[0-9]+$ ]]; then[0m
+2025-05-13T13:45:09.2393680Z [36;1m            total_commits=$((total_commits + commit_size))[0m
+2025-05-13T13:45:09.2394099Z [36;1m          fi[0m
+2025-05-13T13:45:09.2394284Z [36;1m          ;;[0m
+2025-05-13T13:45:09.2394544Z [36;1m        "CreateEvent") create_events=$((create_events + 1)) ;;[0m
+2025-05-13T13:45:09.2394908Z [36;1m        "IssuesEvent") issues_events=$((issues_events + 1)) ;;[0m
+2025-05-13T13:45:09.2395293Z [36;1m        "IssueCommentEvent") issue_comments=$((issue_comments + 1)) ;;[0m
+2025-05-13T13:45:09.2395685Z [36;1m        "PullRequestEvent") pr_events=$((pr_events + 1)) ;;[0m
+2025-05-13T13:45:09.2396075Z [36;1m        "PullRequestReviewEvent") pr_reviews=$((pr_reviews + 1)) ;;[0m
+2025-05-13T13:45:09.2396559Z [36;1m        "PullRequestReviewCommentEvent") pr_review_comments=$((pr_review_comments + 1)) ;;[0m
+2025-05-13T13:45:09.2397072Z [36;1m        "CommitCommentEvent") commit_comments=$((commit_comments + 1)) ;;[0m
+2025-05-13T13:45:09.2397463Z [36;1m        "ForkEvent") fork_events=$((fork_events + 1)) ;;[0m
+2025-05-13T13:45:09.2397793Z [36;1m        "WatchEvent") watch_events=$((watch_events + 1)) ;;[0m
+2025-05-13T13:45:09.2398166Z [36;1m        "ReleaseEvent") release_events=$((release_events + 1)) ;;[0m
+2025-05-13T13:45:09.2398545Z [36;1m        "PublicEvent") public_events=$((public_events + 1)) ;;[0m
+2025-05-13T13:45:09.2398835Z [36;1m      esac[0m
+2025-05-13T13:45:09.2399024Z [36;1m    done[0m
+2025-05-13T13:45:09.2399204Z [36;1m    [0m
+2025-05-13T13:45:09.2399400Z [36;1m    # Check if there are more pages[0m
+2025-05-13T13:45:09.2400054Z [36;1m    local link_header=$(curl -s -I -o /dev/null -w '%{http_code}\n' -H "Authorization: ***" \[0m
+2025-05-13T13:45:09.2400503Z [36;1m      -H "Accept: application/vnd.github+json" \[0m
+2025-05-13T13:45:09.2401071Z [36;1m      "https://api.github.com/users/Faturrachman-dev/events?per_page=100&page=$((page+1))")[0m
+2025-05-13T13:45:09.2401471Z [36;1m    [0m
+2025-05-13T13:45:09.2401719Z [36;1m    if [ "$link_header" != "200" ] || [ "$event_count" -lt 100 ]; then[0m
+2025-05-13T13:45:09.2402040Z [36;1m      echo "No more pages to fetch."[0m
+2025-05-13T13:45:09.2402291Z [36;1m      break[0m
+2025-05-13T13:45:09.2402474Z [36;1m    fi[0m
+2025-05-13T13:45:09.2402640Z [36;1m    [0m
+2025-05-13T13:45:09.2402852Z [36;1m    # Add a small delay to avoid rate limiting[0m
+2025-05-13T13:45:09.2403122Z [36;1m    sleep 1[0m
+2025-05-13T13:45:09.2403304Z [36;1m  done[0m
+2025-05-13T13:45:09.2403474Z [36;1m  [0m
+2025-05-13T13:45:09.2403666Z [36;1m  # Calculate total contributions[0m
+2025-05-13T13:45:09.2404522Z [36;1m  local other_contributions=$((create_events + issues_events + issue_comments + pr_events + pr_reviews + pr_review_comments + commit_comments + fork_events + watch_events + release_events + public_events))[0m
+2025-05-13T13:45:09.2405331Z [36;1m  local total_contributions=$((total_commits + other_contributions))[0m
+2025-05-13T13:45:09.2405657Z [36;1m  [0m
+2025-05-13T13:45:09.2405841Z [36;1m  # Output result summary[0m
+2025-05-13T13:45:09.2406171Z [36;1m  echo "Contribution summary for period $since_date to $until_date:"[0m
+2025-05-13T13:45:09.2406583Z [36;1m  echo "  Push events: $push_events (with $total_commits commits)"[0m
+2025-05-13T13:45:09.2406930Z [36;1m  echo "  Create events: $create_events"[0m
+2025-05-13T13:45:09.2407213Z [36;1m  echo "  Issues events: $issues_events"[0m
+2025-05-13T13:45:09.2407490Z [36;1m  echo "  Issue comments: $issue_comments"[0m
+2025-05-13T13:45:09.2407772Z [36;1m  echo "  PR events: $pr_events"[0m
+2025-05-13T13:45:09.2408029Z [36;1m  echo "  PR reviews: $pr_reviews"[0m
+2025-05-13T13:45:09.2408333Z [36;1m  echo "  PR review comments: $pr_review_comments"[0m
+2025-05-13T13:45:09.2408651Z [36;1m  echo "  Commit comments: $commit_comments"[0m
+2025-05-13T13:45:09.2408937Z [36;1m  echo "  Fork events: $fork_events"[0m
+2025-05-13T13:45:09.2409210Z [36;1m  echo "  Watch events: $watch_events"[0m
+2025-05-13T13:45:09.2409493Z [36;1m  echo "  Release events: $release_events"[0m
+2025-05-13T13:45:09.2409773Z [36;1m  echo "  Public events: $public_events"[0m
+2025-05-13T13:45:09.2410085Z [36;1m  echo "  Total contributions: $total_contributions"[0m
+2025-05-13T13:45:09.2410367Z [36;1m  [0m
+2025-05-13T13:45:09.2410641Z [36;1m  # Return values as a specially formatted key-value string for parsing[0m
+2025-05-13T13:45:09.2411095Z [36;1m  echo "RESULT:$total_contributions:$total_commits:$other_contributions"[0m
+2025-05-13T13:45:09.2411438Z [36;1m}[0m
+2025-05-13T13:45:09.2411606Z [36;1m[0m
+2025-05-13T13:45:09.2411797Z [36;1m# Count yesterday's contributions[0m
+2025-05-13T13:45:09.2412249Z [36;1mYESTERDAY_END_UTC=$(date -u -d "$YESTERDAY_START 23:59:59 +7 hours" +%Y-%m-%dT%H:%M:%SZ)[0m
+2025-05-13T13:45:09.2412958Z [36;1mecho "Counting yesterday's contributions from $YESTERDAY_START_UTC to $YESTERDAY_END_UTC"[0m
+2025-05-13T13:45:09.2413510Z [36;1m[0m
+2025-05-13T13:45:09.2413779Z [36;1m# Capture function return values with a clearer format to parse[0m
+2025-05-13T13:45:09.2414480Z [36;1mYESTERDAY_OUTPUT=$(count_contributions "$YESTERDAY_START_UTC" "$YESTERDAY_END_UTC")[0m
+2025-05-13T13:45:09.2415003Z [36;1mTODAY_RESULTS=$(echo "$YESTERDAY_OUTPUT" | grep "^RESULT:" | cut -d':' -f2-)[0m
+2025-05-13T13:45:09.2415359Z [36;1m[0m
+2025-05-13T13:45:09.2415542Z [36;1mif [[ "$TODAY_RESULTS" ]]; then[0m
+2025-05-13T13:45:09.2415867Z [36;1m  TODAY_CONTRIBUTIONS=$(echo "$TODAY_RESULTS" | cut -d':' -f1)[0m
+2025-05-13T13:45:09.2416248Z [36;1m  TODAY_COMMITS=$(echo "$TODAY_RESULTS" | cut -d':' -f2)[0m
+2025-05-13T13:45:09.2416652Z [36;1m  OTHER_TODAY_CONTRIBUTIONS=$(echo "$TODAY_RESULTS" | cut -d':' -f3)[0m
+2025-05-13T13:45:09.2417125Z [36;1melse[0m
+2025-05-13T13:45:09.2417337Z [36;1m  # Default values if parsing fails[0m
+2025-05-13T13:45:09.2417712Z [36;1m  TODAY_CONTRIBUTIONS=0[0m
+2025-05-13T13:45:09.2417976Z [36;1m  TODAY_COMMITS=0[0m
+2025-05-13T13:45:09.2418205Z [36;1m  OTHER_TODAY_CONTRIBUTIONS=0[0m
+2025-05-13T13:45:09.2418539Z [36;1m  echo "Warning: Failed to parse yesterday's contribution results"[0m
+2025-05-13T13:45:09.2418858Z [36;1mfi[0m
+2025-05-13T13:45:09.2419023Z [36;1m[0m
+2025-05-13T13:45:09.2419231Z [36;1m# Export values to GitHub Actions environment[0m
+2025-05-13T13:45:09.2419595Z [36;1mecho "TODAY_CONTRIBUTIONS=$TODAY_CONTRIBUTIONS" >> $GITHUB_ENV[0m
+2025-05-13T13:45:09.2419980Z [36;1mecho "TODAY_COMMITS=$TODAY_COMMITS" >> $GITHUB_ENV[0m
+2025-05-13T13:45:09.2420388Z [36;1mecho "OTHER_TODAY_CONTRIBUTIONS=$OTHER_TODAY_CONTRIBUTIONS" >> $GITHUB_ENV[0m
+2025-05-13T13:45:09.2420746Z [36;1m[0m
+2025-05-13T13:45:09.2420940Z [36;1m# Get previous month data from README[0m
+2025-05-13T13:45:09.2421237Z [36;1mPREV_MONTH_CONTRIBUTIONS=0[0m
+2025-05-13T13:45:09.2421487Z [36;1mPREV_MONTH_COMMITS=0[0m
+2025-05-13T13:45:09.2421697Z [36;1m[0m
+2025-05-13T13:45:09.2421952Z [36;1mif grep -q "<!-- MONTH_COMMITS:" faturrachman-dev/README.md; then[0m
+2025-05-13T13:45:09.2422529Z [36;1m  PREV_MONTH_COMMITS=$(grep "<!-- MONTH_COMMITS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_COMMITS: \([0-9]\+\) .* -->/\1/')[0m
+2025-05-13T13:45:09.2423230Z [36;1m  PREV_MONTH=$(grep "<!-- MONTH_COMMITS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_COMMITS: [0-9]\+ \(.*\) -->/\1/')[0m
+2025-05-13T13:45:09.2423672Z [36;1mfi[0m
+2025-05-13T13:45:09.2423943Z [36;1m[0m
+2025-05-13T13:45:09.2424210Z [36;1mif grep -q "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md; then[0m
+2025-05-13T13:45:09.2424854Z [36;1m  PREV_MONTH_CONTRIBUTIONS=$(grep "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_CONTRIBUTIONS: \([0-9]\+\) .* -->/\1/')[0m
+2025-05-13T13:45:09.2425707Z [36;1m  PREV_MONTH_CONTR=$(grep "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_CONTRIBUTIONS: [0-9]\+ \(.*\) -->/\1/')[0m
+2025-05-13T13:45:09.2426217Z [36;1mfi[0m
+2025-05-13T13:45:09.2426380Z [36;1m[0m
+2025-05-13T13:45:09.2426581Z [36;1m# Count the entire month's contributions[0m
+2025-05-13T13:45:09.2485944Z [36;1mecho "Counting contributions for the entire month..."[0m
+2025-05-13T13:45:09.2486784Z [36;1mMONTH_END_UTC=$(date -u -d "$(date +%Y-%m-01) +1 month -1 day 23:59:59 +7 hours" +%Y-%m-%dT%H:%M:%SZ)[0m
+2025-05-13T13:45:09.2487583Z [36;1m[0m
+2025-05-13T13:45:09.2488135Z [36;1m# Capture function return values for month using the same approach[0m
+2025-05-13T13:45:09.2488941Z [36;1mMONTH_OUTPUT=$(count_contributions "$MONTH_START_UTC" "$MONTH_END_UTC")[0m
+2025-05-13T13:45:09.2489798Z [36;1mMONTH_RESULTS=$(echo "$MONTH_OUTPUT" | grep "^RESULT:" | cut -d':' -f2-)[0m
+2025-05-13T13:45:09.2490386Z [36;1m[0m
+2025-05-13T13:45:09.2490710Z [36;1mif [[ "$MONTH_RESULTS" ]]; then[0m
+2025-05-13T13:45:09.2491244Z [36;1m  MONTH_ALL=$(echo "$MONTH_RESULTS" | cut -d':' -f1)[0m
+2025-05-13T13:45:09.2491939Z [36;1m  COMMITS_MONTH_ALL=$(echo "$MONTH_RESULTS" | cut -d':' -f2)[0m
+2025-05-13T13:45:09.2492605Z [36;1m  OTHER_MONTH_ALL=$(echo "$MONTH_RESULTS" | cut -d':' -f3)[0m
+2025-05-13T13:45:09.2493148Z [36;1melse[0m
+2025-05-13T13:45:09.2493548Z [36;1m  # Default values if parsing fails[0m
+2025-05-13T13:45:09.2494209Z [36;1m  MONTH_ALL=0[0m
+2025-05-13T13:45:09.2494579Z [36;1m  COMMITS_MONTH_ALL=0[0m
+2025-05-13T13:45:09.2494961Z [36;1m  OTHER_MONTH_ALL=0[0m
+2025-05-13T13:45:09.2495496Z [36;1m  echo "Warning: Failed to parse monthly contribution results"[0m
+2025-05-13T13:45:09.2496069Z [36;1mfi[0m
+2025-05-13T13:45:09.2496349Z [36;1m[0m
+2025-05-13T13:45:09.2496667Z [36;1m# Determine final month totals[0m
+2025-05-13T13:45:09.2497334Z [36;1mif [[ "$PREV_MONTH" != "$CURRENT_MONTH" || "$PREV_MONTH_CONTR" != "$CURRENT_MONTH" ]]; then[0m
+2025-05-13T13:45:09.2498361Z [36;1m  echo "New month detected or first run, using fresh counts"[0m
+2025-05-13T13:45:09.2498981Z [36;1m  MONTH_CONTRIBUTIONS=$MONTH_ALL[0m
+2025-05-13T13:45:09.2499632Z [36;1m  MONTH_COMMITS=$COMMITS_MONTH_ALL[0m
+2025-05-13T13:45:09.2500072Z [36;1melse[0m
+2025-05-13T13:45:09.2500591Z [36;1m  echo "Same month, using previous counts plus yesterday's contributions"[0m
+2025-05-13T13:45:09.2501312Z [36;1m  # Use the stored counts and add yesterday's to them[0m
+2025-05-13T13:45:09.2502133Z [36;1m  MONTH_CONTRIBUTIONS=$((PREV_MONTH_CONTRIBUTIONS + TODAY_CONTRIBUTIONS))[0m
+2025-05-13T13:45:09.2502874Z [36;1m  MONTH_COMMITS=$((PREV_MONTH_COMMITS + TODAY_COMMITS))[0m
+2025-05-13T13:45:09.2503168Z [36;1mfi[0m
+2025-05-13T13:45:09.2503342Z [36;1m[0m
+2025-05-13T13:45:09.2503564Z [36;1m# Export month values to GitHub Actions environment[0m
+2025-05-13T13:45:09.2504206Z [36;1mecho "MONTH_CONTRIBUTIONS=$MONTH_CONTRIBUTIONS" >> $GITHUB_ENV[0m
+2025-05-13T13:45:09.2504608Z [36;1mecho "MONTH_COMMITS=$MONTH_COMMITS" >> $GITHUB_ENV[0m
+2025-05-13T13:45:09.2504941Z [36;1mecho "CURRENT_MONTH=$CURRENT_MONTH" >> $GITHUB_ENV[0m
+2025-05-13T13:45:09.2505225Z [36;1m[0m
+2025-05-13T13:45:09.2505405Z [36;1mecho "Final Summary:"[0m
+2025-05-13T13:45:09.2505661Z [36;1mecho "  Yesterday's commits: $TODAY_COMMITS"[0m
+2025-05-13T13:45:09.2506040Z [36;1mecho "  Yesterday's other contributions: $OTHER_TODAY_CONTRIBUTIONS"[0m
+2025-05-13T13:45:09.2506472Z [36;1mecho "  Yesterday's total contributions: $TODAY_CONTRIBUTIONS"[0m
+2025-05-13T13:45:09.2506833Z [36;1mecho "  This month's commits: $MONTH_COMMITS"[0m
+2025-05-13T13:45:09.2507195Z [36;1mecho "  This month's total contributions: $MONTH_CONTRIBUTIONS"[0m
+2025-05-13T13:45:09.2560380Z shell: /usr/bin/bash -e {0}
+2025-05-13T13:45:09.2560614Z env:
+2025-05-13T13:45:09.2561000Z   COMMIT_COUNTER_TOKEN: ***
+2025-05-13T13:45:09.2561237Z ##[endgroup]
+2025-05-13T13:45:09.2866838Z Counting yesterday's contributions since: 2025-05-12T08:00:00Z (00:00 WIB yesterday)
+2025-05-13T13:45:09.2902338Z Counting this month's contributions since: 2025-05-01T08:00:00Z (start of 2025-05)
+2025-05-13T13:45:09.2917331Z Counting yesterday's contributions from 2025-05-12T08:00:00Z to 2025-05-12T17:59:59Z
+2025-05-13T13:45:10.5378205Z Counting contributions for the entire month...
+2025-05-13T13:45:11.8860547Z New month detected or first run, using fresh counts
+2025-05-13T13:45:11.8861121Z Final Summary:
+2025-05-13T13:45:11.8861437Z   Yesterday's commits: 9
+2025-05-13T13:45:11.8861817Z   Yesterday's other contributions: 3
+2025-05-13T13:45:11.8862256Z   Yesterday's total contributions: 12
+2025-05-13T13:45:11.8862674Z   This month's commits: 59
+2025-05-13T13:45:11.8863217Z   This month's total contributions: 80
+2025-05-13T13:45:11.8894745Z ##[group]Run # Ensure values are numbers or default to 0
+2025-05-13T13:45:11.8895203Z [36;1m# Ensure values are numbers or default to 0[0m
+2025-05-13T13:45:11.8895510Z [36;1mTODAY_COMMITS=${TODAY_COMMITS:-0}[0m
+2025-05-13T13:45:11.8895807Z [36;1mTODAY_CONTRIBUTIONS=${TODAY_CONTRIBUTIONS:-0}[0m
+2025-05-13T13:45:11.8896121Z [36;1mMONTH_COMMITS=${MONTH_COMMITS:-0}[0m
+2025-05-13T13:45:11.8896422Z [36;1mMONTH_CONTRIBUTIONS=${MONTH_CONTRIBUTIONS:-0}[0m
+2025-05-13T13:45:11.8896702Z [36;1m[0m
+2025-05-13T13:45:11.8896987Z [36;1m# Update the placeholder in the comment line for yesterday's commits[0m
+2025-05-13T13:45:11.8897430Z [36;1mif grep -q "<!-- TODAY_COMMITS:" faturrachman-dev/README.md; then[0m
+2025-05-13T13:45:11.8897920Z [36;1m  sed -i "s/<!-- TODAY_COMMITS:.*-->/<!-- TODAY_COMMITS: $TODAY_COMMITS -->/g" faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8898312Z [36;1melse[0m
+2025-05-13T13:45:11.8898650Z [36;1m  echo "<!-- TODAY_COMMITS: $TODAY_COMMITS -->" >> faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8899332Z [36;1m  echo "![Yesterday's Commits](https://img.shields.io/badge/Yesterday's%20Commits-$TODAY_COMMITS-blue)" >> faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8899866Z [36;1mfi[0m
+2025-05-13T13:45:11.8900097Z [36;1m# Update the badge line for yesterday's commits[0m
+2025-05-13T13:45:11.8900490Z [36;1mif grep -q "Yesterday's%20Commits-.*-blue" faturrachman-dev/README.md; then[0m
+2025-05-13T13:45:11.8901257Z [36;1m  sed -i "s/Yesterday's%20Commits-.*-blue/Yesterday's%20Commits-$TODAY_COMMITS-blue/g" faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8901721Z [36;1mfi[0m
+2025-05-13T13:45:11.8901885Z [36;1m[0m
+2025-05-13T13:45:11.8902079Z [36;1m# Add yesterday's total contributions[0m
+2025-05-13T13:45:11.8902442Z [36;1mif grep -q "<!-- TODAY_CONTRIBUTIONS:" faturrachman-dev/README.md; then[0m
+2025-05-13T13:45:11.8903006Z [36;1m  sed -i "s/<!-- TODAY_CONTRIBUTIONS:.*-->/<!-- TODAY_CONTRIBUTIONS: $TODAY_CONTRIBUTIONS -->/g" faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8903465Z [36;1melse[0m
+2025-05-13T13:45:11.8904047Z [36;1m  echo "<!-- TODAY_CONTRIBUTIONS: $TODAY_CONTRIBUTIONS -->" >> faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8904834Z [36;1m  echo "![Yesterday's Contributions](https://img.shields.io/badge/Yesterday's%20Contributions-$TODAY_CONTRIBUTIONS-purple)" >> faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8905458Z [36;1mfi[0m
+2025-05-13T13:45:11.8905696Z [36;1m# Update the badge line for yesterday's contributions[0m
+2025-05-13T13:45:11.8906144Z [36;1mif grep -q "Yesterday's%20Contributions-.*-purple" faturrachman-dev/README.md; then[0m
+2025-05-13T13:45:11.8906858Z [36;1m  sed -i "s/Yesterday's%20Contributions-.*-purple/Yesterday's%20Contributions-$TODAY_CONTRIBUTIONS-purple/g" faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8907401Z [36;1mfi[0m
+2025-05-13T13:45:11.8907558Z [36;1m[0m
+2025-05-13T13:45:11.8907820Z [36;1m# Update the placeholder in the comment line for monthly commits[0m
+2025-05-13T13:45:11.8908238Z [36;1mif grep -q "<!-- MONTH_COMMITS:" faturrachman-dev/README.md; then[0m
+2025-05-13T13:45:11.8908756Z [36;1m  sed -i "s/<!-- MONTH_COMMITS:.*-->/<!-- MONTH_COMMITS: $MONTH_COMMITS $CURRENT_MONTH -->/g" faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8909188Z [36;1melse[0m
+2025-05-13T13:45:11.8909508Z [36;1m  echo "<!-- MONTH_COMMITS: $MONTH_COMMITS $CURRENT_MONTH -->" >> faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8910210Z [36;1m  echo "![This Month's Commits](https://img.shields.io/badge/This%20Month's%20Commits-$MONTH_COMMITS-green)" >> faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8910737Z [36;1mfi[0m
+2025-05-13T13:45:11.8910941Z [36;1m# Update the badge line for monthly commits[0m
+2025-05-13T13:45:11.8911337Z [36;1mif grep -q "This%20Month's%20Commits-.*-green" faturrachman-dev/README.md; then[0m
+2025-05-13T13:45:11.8911953Z [36;1m  sed -i "s/This%20Month's%20Commits-.*-green/This%20Month's%20Commits-$MONTH_COMMITS-green/g" faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8912584Z [36;1mfi[0m
+2025-05-13T13:45:11.8912755Z [36;1m[0m
+2025-05-13T13:45:11.8912945Z [36;1m# Add monthly total contributions[0m
+2025-05-13T13:45:11.8913293Z [36;1mif grep -q "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md; then[0m
+2025-05-13T13:45:11.8914111Z [36;1m  sed -i "s/<!-- MONTH_CONTRIBUTIONS:.*-->/<!-- MONTH_CONTRIBUTIONS: $MONTH_CONTRIBUTIONS $CURRENT_MONTH -->/g" faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8914615Z [36;1melse[0m
+2025-05-13T13:45:11.8914982Z [36;1m  echo "<!-- MONTH_CONTRIBUTIONS: $MONTH_CONTRIBUTIONS $CURRENT_MONTH -->" >> faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8915781Z [36;1m  echo "![This Month's Contributions](https://img.shields.io/badge/This%20Month's%20Contributions-$MONTH_CONTRIBUTIONS-orange)" >> faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8916374Z [36;1mfi[0m
+2025-05-13T13:45:11.8916598Z [36;1m# Update the badge line for monthly contributions[0m
+2025-05-13T13:45:11.8917042Z [36;1mif grep -q "This%20Month's%20Contributions-.*-orange" faturrachman-dev/README.md; then[0m
+2025-05-13T13:45:11.8917757Z [36;1m  sed -i "s/This%20Month's%20Contributions-.*-orange/This%20Month's%20Contributions-$MONTH_CONTRIBUTIONS-orange/g" faturrachman-dev/README.md[0m
+2025-05-13T13:45:11.8918291Z [36;1mfi[0m
+2025-05-13T13:45:11.8969228Z shell: /usr/bin/bash -e {0}
+2025-05-13T13:45:11.8969462Z env:
+2025-05-13T13:45:11.8969786Z   TODAY_CONTRIBUTIONS: 12
+2025-05-13T13:45:11.8970015Z   TODAY_COMMITS: 9
+2025-05-13T13:45:11.8970250Z   OTHER_TODAY_CONTRIBUTIONS: 3
+2025-05-13T13:45:11.8970472Z   MONTH_CONTRIBUTIONS: 80
+2025-05-13T13:45:11.8970673Z   MONTH_COMMITS: 59
+2025-05-13T13:45:11.8970861Z   CURRENT_MONTH: 2025-05
+2025-05-13T13:45:11.8971060Z ##[endgroup]
+2025-05-13T13:45:11.9351008Z ##[group]Run stefanzweifel/git-auto-commit-action@v4
+2025-05-13T13:45:11.9351331Z with:
+2025-05-13T13:45:11.9351564Z   commit_message: Update GitHub contribution statistics
+2025-05-13T13:45:11.9351875Z   repository: faturrachman-dev
+2025-05-13T13:45:11.9352110Z   file_pattern: .
+2025-05-13T13:45:11.9352310Z   commit_user_name: github-actions[bot]
+2025-05-13T13:45:11.9352670Z   commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+2025-05-13T13:45:11.9353134Z   commit_author: Faturrachman-dev <Faturrachman-dev@users.noreply.github.com>
+2025-05-13T13:45:11.9353500Z   skip_dirty_check: false
+2025-05-13T13:45:11.9353709Z   skip_fetch: false
+2025-05-13T13:45:11.9354048Z   skip_checkout: false
+2025-05-13T13:45:11.9354247Z   disable_globbing: false
+2025-05-13T13:45:11.9354447Z   create_branch: false
+2025-05-13T13:45:11.9354633Z   internal_git_binary: git
+2025-05-13T13:45:11.9354832Z env:
+2025-05-13T13:45:11.9354995Z   TODAY_CONTRIBUTIONS: 12
+2025-05-13T13:45:11.9355223Z   TODAY_COMMITS: 9
+2025-05-13T13:45:11.9355412Z   OTHER_TODAY_CONTRIBUTIONS: 3
+2025-05-13T13:45:11.9355634Z   MONTH_CONTRIBUTIONS: 80
+2025-05-13T13:45:11.9355837Z   MONTH_COMMITS: 59
+2025-05-13T13:45:11.9356015Z   CURRENT_MONTH: 2025-05
+2025-05-13T13:45:11.9356214Z ##[endgroup]
+2025-05-13T13:45:11.9583573Z Started: bash /home/runner/work/_actions/stefanzweifel/git-auto-commit-action/v4/entrypoint.sh
+2025-05-13T13:45:11.9624226Z INPUT_REPOSITORY value: faturrachman-dev
+2025-05-13T13:45:11.9624703Z INPUT_STATUS_OPTIONS: 
+2025-05-13T13:45:11.9625216Z INPUT_FILE_PATTERN: .
+2025-05-13T13:45:11.9676660Z INPUT_BRANCH value: 
+2025-05-13T13:45:12.3028560Z M	README.md
+2025-05-13T13:45:12.3028957Z Your branch is up to date with 'origin/main'.
+2025-05-13T13:45:12.3031288Z INPUT_ADD_OPTIONS: 
+2025-05-13T13:45:12.3032068Z INPUT_FILE_PATTERN: .
+2025-05-13T13:45:12.3073090Z INPUT_COMMIT_OPTIONS: 
+2025-05-13T13:45:12.3074020Z INPUT_COMMIT_USER_NAME: github-actions[bot]
+2025-05-13T13:45:12.3074757Z INPUT_COMMIT_USER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+2025-05-13T13:45:12.3075421Z INPUT_COMMIT_MESSAGE: Update GitHub contribution statistics
+2025-05-13T13:45:12.3075944Z INPUT_COMMIT_AUTHOR: Faturrachman-dev <Faturrachman-dev@users.noreply.github.com>
+2025-05-13T13:45:12.3117681Z [main 1347231] Update GitHub contribution statistics
+2025-05-13T13:45:12.3118351Z  Author: Faturrachman-dev <Faturrachman-dev@users.noreply.github.com>
+2025-05-13T13:45:12.3118889Z  1 file changed, 8 insertions(+), 8 deletions(-)
+2025-05-13T13:45:12.3137504Z INPUT_TAGGING_MESSAGE: 
+2025-05-13T13:45:12.3137954Z No tagging message supplied. No tag will be added.
+2025-05-13T13:45:12.3138440Z INPUT_PUSH_OPTIONS: 
+2025-05-13T13:45:12.8847014Z To https://github.com/Faturrachman-dev/faturrachman-dev
+2025-05-13T13:45:12.8847608Z    ddcf707..1347231  main -> main
+2025-05-13T13:45:12.9005977Z Post job cleanup.
+2025-05-13T13:45:12.9916591Z [command]/usr/bin/git version
+2025-05-13T13:45:12.9952364Z git version 2.49.0
+2025-05-13T13:45:12.9995168Z Temporarily overriding HOME='/home/runner/work/_temp/08f5e58b-0d60-45ca-8cb4-9700fa2a49b5' before making global git config changes
+2025-05-13T13:45:12.9996464Z Adding repository directory to the temporary git global config as a safe directory
+2025-05-13T13:45:13.0001889Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/faturrachman-dev/faturrachman-dev/faturrachman-dev
+2025-05-13T13:45:13.0037009Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-05-13T13:45:13.0068987Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-05-13T13:45:13.0421044Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-05-13T13:45:13.0441276Z http.https://github.com/.extraheader
+2025-05-13T13:45:13.0454475Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2025-05-13T13:45:13.0485429Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-05-13T13:45:13.0807575Z Cleaning up orphan processes

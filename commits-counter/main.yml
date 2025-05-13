@@ -24,9 +24,10 @@ jobs:
           COMMIT_COUNTER_TOKEN: ${{ secrets.COMMIT_COUNTER_TOKEN }}
         run: |
           # Calculate the start of yesterday in WIB (UTC+7)
+          # We keep calculating for yesterday but will label it as "today"
           YESTERDAY_START=$(TZ=Asia/Jakarta date -d "yesterday" +%Y-%m-%d)
           YESTERDAY_START_UTC=$(date -u -d "$YESTERDAY_START 00:00:00 -7 hours" +%Y-%m-%dT%H:%M:%SZ)
-          echo "Counting yesterday's contributions since: $YESTERDAY_START_UTC (00:00 WIB yesterday)"
+          echo "Counting today's contributions since: $YESTERDAY_START_UTC (00:00 WIB yesterday)"
 
           # Calculate the start of the current month in WIB
           MONTH_START=$(TZ=Asia/Jakarta date +%Y-%m-01)
@@ -62,7 +63,7 @@ jobs:
               
               # Use -s for silent mode and capture the response in a variable
               local response=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" \
-                -H "Accept: application/vnd.github+json" \
+              -H "Accept: application/vnd.github+json" \
                 "https://api.github.com/users/Faturrachman-dev/events?per_page=100&page=$page")
               
               # Check if we got a valid response (should be a JSON array)
@@ -95,8 +96,8 @@ jobs:
                 
                 # Skip events outside our date range
                 if [ -z "$event_date" ] || [ "$event_date" \< "$since_date" ] || [ "$event_date" \> "$until_date" ]; then
-                  continue
-                fi
+                continue
+              fi
                 
                 # Count by event type
                 case "$event_type" in
@@ -160,13 +161,13 @@ jobs:
             echo "RESULT:$total_contributions:$total_commits:$other_contributions"
           }
 
-          # Count yesterday's contributions
+          # Count today's contributions (using yesterday's data)
           YESTERDAY_END_UTC=$(date -u -d "$YESTERDAY_START 23:59:59 +7 hours" +%Y-%m-%dT%H:%M:%SZ)
-          echo "Counting yesterday's contributions from $YESTERDAY_START_UTC to $YESTERDAY_END_UTC"
+          echo "Counting today's contributions from $YESTERDAY_START_UTC to $YESTERDAY_END_UTC"
           
           # Capture function return values with a clearer format to parse
-          YESTERDAY_OUTPUT=$(count_contributions "$YESTERDAY_START_UTC" "$YESTERDAY_END_UTC")
-          TODAY_RESULTS=$(echo "$YESTERDAY_OUTPUT" | grep "^RESULT:" | cut -d':' -f2-)
+          TODAY_OUTPUT=$(count_contributions "$YESTERDAY_START_UTC" "$YESTERDAY_END_UTC")
+          TODAY_RESULTS=$(echo "$TODAY_OUTPUT" | grep "^RESULT:" | cut -d':' -f2-)
           
           if [[ "$TODAY_RESULTS" ]]; then
             TODAY_CONTRIBUTIONS=$(echo "$TODAY_RESULTS" | cut -d':' -f1)
@@ -177,7 +178,7 @@ jobs:
             TODAY_CONTRIBUTIONS=0
             TODAY_COMMITS=0
             OTHER_TODAY_CONTRIBUTIONS=0
-            echo "Warning: Failed to parse yesterday's contribution results"
+            echo "Warning: Failed to parse today's contribution results"
           fi
           
           # Export values to GitHub Actions environment
@@ -193,7 +194,7 @@ jobs:
             PREV_MONTH_COMMITS=$(grep "<!-- MONTH_COMMITS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_COMMITS: \([0-9]\+\) .* -->/\1/')
             PREV_MONTH=$(grep "<!-- MONTH_COMMITS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_COMMITS: [0-9]\+ \(.*\) -->/\1/')
           fi
-          
+
           if grep -q "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md; then
             PREV_MONTH_CONTRIBUTIONS=$(grep "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_CONTRIBUTIONS: \([0-9]\+\) .* -->/\1/')
             PREV_MONTH_CONTR=$(grep "<!-- MONTH_CONTRIBUTIONS:" faturrachman-dev/README.md | sed 's/<!-- MONTH_CONTRIBUTIONS: [0-9]\+ \(.*\) -->/\1/')
@@ -225,8 +226,8 @@ jobs:
             MONTH_CONTRIBUTIONS=$MONTH_ALL
             MONTH_COMMITS=$COMMITS_MONTH_ALL
           else
-            echo "Same month, using previous counts plus yesterday's contributions"
-            # Use the stored counts and add yesterday's to them
+            echo "Same month, using previous counts plus today's contributions"
+            # Use the stored counts and add today's to them
             MONTH_CONTRIBUTIONS=$((PREV_MONTH_CONTRIBUTIONS + TODAY_CONTRIBUTIONS))
             MONTH_COMMITS=$((PREV_MONTH_COMMITS + TODAY_COMMITS))
           fi
@@ -237,9 +238,9 @@ jobs:
           echo "CURRENT_MONTH=$CURRENT_MONTH" >> $GITHUB_ENV
           
           echo "Final Summary:"
-          echo "  Yesterday's commits: $TODAY_COMMITS"
-          echo "  Yesterday's other contributions: $OTHER_TODAY_CONTRIBUTIONS"
-          echo "  Yesterday's total contributions: $TODAY_CONTRIBUTIONS"
+          echo "  Today's commits: $TODAY_COMMITS"
+          echo "  Today's other contributions: $OTHER_TODAY_CONTRIBUTIONS"
+          echo "  Today's total contributions: $TODAY_CONTRIBUTIONS"
           echo "  This month's commits: $MONTH_COMMITS"
           echo "  This month's total contributions: $MONTH_CONTRIBUTIONS"
 
@@ -251,28 +252,34 @@ jobs:
           MONTH_COMMITS=${MONTH_COMMITS:-0}
           MONTH_CONTRIBUTIONS=${MONTH_CONTRIBUTIONS:-0}
           
-          # Update the placeholder in the comment line for yesterday's commits
+          # Update the placeholder in the comment line for today's commits
           if grep -q "<!-- TODAY_COMMITS:" faturrachman-dev/README.md; then
             sed -i "s/<!-- TODAY_COMMITS:.*-->/<!-- TODAY_COMMITS: $TODAY_COMMITS -->/g" faturrachman-dev/README.md
           else
             echo "<!-- TODAY_COMMITS: $TODAY_COMMITS -->" >> faturrachman-dev/README.md
-            echo "![Yesterday's Commits](https://img.shields.io/badge/Yesterday's%20Commits-$TODAY_COMMITS-blue)" >> faturrachman-dev/README.md
-          fi
-          # Update the badge line for yesterday's commits
-          if grep -q "Yesterday's%20Commits-.*-blue" faturrachman-dev/README.md; then
-            sed -i "s/Yesterday's%20Commits-.*-blue/Yesterday's%20Commits-$TODAY_COMMITS-blue/g" faturrachman-dev/README.md
+            echo "![Today's Commits](https://img.shields.io/badge/Today's%20Commits-$TODAY_COMMITS-blue)" >> faturrachman-dev/README.md
           fi
           
-          # Add yesterday's total contributions
+          # Update the badge line for today's commits - check for both Today's and Yesterday's format
+          if grep -q "Yesterday's%20Commits-.*-blue" faturrachman-dev/README.md; then
+            sed -i "s/Yesterday's%20Commits-.*-blue/Today's%20Commits-$TODAY_COMMITS-blue/g" faturrachman-dev/README.md
+          elif grep -q "Today's%20Commits-.*-blue" faturrachman-dev/README.md; then
+            sed -i "s/Today's%20Commits-.*-blue/Today's%20Commits-$TODAY_COMMITS-blue/g" faturrachman-dev/README.md
+          fi
+          
+          # Add today's total contributions
           if grep -q "<!-- TODAY_CONTRIBUTIONS:" faturrachman-dev/README.md; then
             sed -i "s/<!-- TODAY_CONTRIBUTIONS:.*-->/<!-- TODAY_CONTRIBUTIONS: $TODAY_CONTRIBUTIONS -->/g" faturrachman-dev/README.md
           else
             echo "<!-- TODAY_CONTRIBUTIONS: $TODAY_CONTRIBUTIONS -->" >> faturrachman-dev/README.md
-            echo "![Yesterday's Contributions](https://img.shields.io/badge/Yesterday's%20Contributions-$TODAY_CONTRIBUTIONS-purple)" >> faturrachman-dev/README.md
+            echo "![Today's Contributions](https://img.shields.io/badge/Today's%20Contributions-$TODAY_CONTRIBUTIONS-purple)" >> faturrachman-dev/README.md
           fi
-          # Update the badge line for yesterday's contributions
+          
+          # Update the badge line for today's contributions - check for both Today's and Yesterday's format
           if grep -q "Yesterday's%20Contributions-.*-purple" faturrachman-dev/README.md; then
-            sed -i "s/Yesterday's%20Contributions-.*-purple/Yesterday's%20Contributions-$TODAY_CONTRIBUTIONS-purple/g" faturrachman-dev/README.md
+            sed -i "s/Yesterday's%20Contributions-.*-purple/Today's%20Contributions-$TODAY_CONTRIBUTIONS-purple/g" faturrachman-dev/README.md
+          elif grep -q "Today's%20Contributions-.*-purple" faturrachman-dev/README.md; then
+            sed -i "s/Today's%20Contributions-.*-purple/Today's%20Contributions-$TODAY_CONTRIBUTIONS-purple/g" faturrachman-dev/README.md
           fi
 
           # Update the placeholder in the comment line for monthly commits
@@ -282,6 +289,7 @@ jobs:
             echo "<!-- MONTH_COMMITS: $MONTH_COMMITS $CURRENT_MONTH -->" >> faturrachman-dev/README.md
             echo "![This Month's Commits](https://img.shields.io/badge/This%20Month's%20Commits-$MONTH_COMMITS-green)" >> faturrachman-dev/README.md
           fi
+          
           # Update the badge line for monthly commits
           if grep -q "This%20Month's%20Commits-.*-green" faturrachman-dev/README.md; then
             sed -i "s/This%20Month's%20Commits-.*-green/This%20Month's%20Commits-$MONTH_COMMITS-green/g" faturrachman-dev/README.md
@@ -294,6 +302,7 @@ jobs:
             echo "<!-- MONTH_CONTRIBUTIONS: $MONTH_CONTRIBUTIONS $CURRENT_MONTH -->" >> faturrachman-dev/README.md
             echo "![This Month's Contributions](https://img.shields.io/badge/This%20Month's%20Contributions-$MONTH_CONTRIBUTIONS-orange)" >> faturrachman-dev/README.md
           fi
+          
           # Update the badge line for monthly contributions
           if grep -q "This%20Month's%20Contributions-.*-orange" faturrachman-dev/README.md; then
             sed -i "s/This%20Month's%20Contributions-.*-orange/This%20Month's%20Contributions-$MONTH_CONTRIBUTIONS-orange/g" faturrachman-dev/README.md
