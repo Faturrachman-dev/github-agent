@@ -80,7 +80,7 @@ jobs:
             PAGE=1
             RETRY_COUNT=0
             while true; do
-              if ! curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | jq -s length > /dev/null; then
+              if ! curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | jq -s length > /dev/null; then
                 RETRY_COUNT=$((RETRY_COUNT + 1))
                 if [ $RETRY_COUNT -gt 3 ]; then
                   echo "Error: Failed to fetch yesterday's commits for $REPO after 3 retries, skipping..."
@@ -90,9 +90,9 @@ jobs:
                 sleep $((2 ** RETRY_COUNT))
                 continue
               fi
-              PAGE_COMMITS=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | jq length)
+              PAGE_COMMITS=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | jq length)
               COMMITS=$((COMMITS + PAGE_COMMITS))
-              LINK=$(curl -s -I -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | grep -i '^link:' || true)
+              LINK=$(curl -s -I -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$YESTERDAY_START_UTC&until=$(date -u -d "today" +%Y-%m-%dT%H:%M:%SZ)&per_page=100&page=$PAGE" | grep -i '^link:' || true)
               if [[ ! "$LINK" =~ "rel=\"next\"" ]]; then
                 break
               fi
@@ -106,7 +106,7 @@ jobs:
             PAGE=1
             RETRY_COUNT=0
             while true; do
-              if ! curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | jq -s length > /dev/null; then
+              if ! curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | jq -s length > /dev/null; then
                 RETRY_COUNT=$((RETRY_COUNT + 1))
                 if [ $RETRY_COUNT -gt 3 ]; then
                   echo "Error: Failed to fetch this month's commits for $REPO after 3 retries, skipping..."
@@ -116,9 +116,9 @@ jobs:
                 sleep $((2 ** RETRY_COUNT))
                 continue
               fi
-              PAGE_COMMITS=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | jq length)
+              PAGE_COMMITS=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | jq length)
               COMMITS=$((COMMITS + PAGE_COMMITS))
-              LINK=$(curl -s -I -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=faturrachman.63@smk.belajar.id&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | grep -i '^link:' || true)
+              LINK=$(curl -s -I -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/Faturrachman-dev/$REPO/commits?author=Faturrachman-dev&since=$MONTH_START_UTC&per_page=100&page=$PAGE" | grep -i '^link:' || true)
               if [[ ! "$LINK" =~ "rel=\"next\"" ]]; then
                 break
               fi
