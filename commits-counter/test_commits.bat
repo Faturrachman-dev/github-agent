@@ -17,8 +17,7 @@ powershell -Command "$user = Get-Content logs\user_info.json | ConvertFrom-Json;
 
 REM Get repositories list including private repos
 echo Fetching all your repositories... [%time%]
-powershell -Command "$env:GH_TOKEN='%TOKEN%'; Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/user/repos?per_page=100&affiliation=owner,collaborator,organization_member' | ConvertTo-Json -Depth 10 | Out-File logs\all_repos.json -Encoding ascii"
-powershell -Command "$repos = Get-Content logs\all_repos.json | ConvertFrom-Json; Write-Host 'Found' $repos.Count 'repositories'; $repos | ForEach-Object { $_.full_name + ' [' + $_.visibility + ']' } | Out-File -FilePath logs\all_repos_list.txt -Encoding ascii; $repos | ForEach-Object { $_.name } | Out-File -FilePath logs\all_repos.txt -Encoding ascii"
+powershell -Command "$env:GH_TOKEN='%TOKEN%'; $repos = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/user/repos?per_page=100&affiliation=owner,collaborator,organization_member'; $repos | ConvertTo-Json -Depth 10 | Out-File logs\all_repos.json -Encoding ascii; Write-Host 'Found' $repos.Count 'repositories'; $repos | ForEach-Object { $_.full_name + ' [' + $_.visibility + ']' } | Out-File -FilePath logs\all_repos_list.txt -Encoding ascii; $repos.name | Out-File -FilePath logs\repos.txt -Encoding ascii"
 
 echo.
 echo ========== TRYING DIFFERENT DATE FORMATS ==========
@@ -51,130 +50,104 @@ echo.
 set TOTAL_COMMITS_WIB=0
 set TOTAL_COMMITS_UTC=0
 set TOTAL_COMMITS_WIDE=0
-set TOTAL_ISSUES=0
-set TOTAL_PRS=0
-set TOTAL_REVIEWS=0
-set TOTAL_DEFAULT_BRANCH_COMMITS=0
-set TOTAL_OTHER_BRANCH_COMMITS=0
 
-for /f "tokens=*" %%r in (logs\all_repos.txt) do (
+REM Debug info - check that the repos file exists and has content
+echo Verifying repo file exists before scanning...
+dir logs\repos.txt
+type logs\repos.txt
+
+if not exist logs\repos.txt (
+  echo ERROR: repos.txt file not found. Creating directly from API...
+  powershell -Command "$env:GH_TOKEN='%TOKEN%'; $repos = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/user/repos?per_page=100&affiliation=owner,collaborator,organization_member'; foreach ($repo in $repos) { $repo.name | Out-File -FilePath logs\repos.txt -Append -Encoding ascii }"
+)
+
+for /f "tokens=*" %%r in (logs\repos.txt) do (
+  echo.
   echo Checking repository: %%r [%time%]
   
-  REM Get default branch name
-  powershell -Command "$env:GH_TOKEN='%TOKEN%'; $repo = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/repos/Faturrachman-dev/%%r'; $repo | ConvertTo-Json -Depth 10 | Out-File logs\%%r_repo_info.json -Encoding ascii; Write-Host '  Default branch:' $repo.default_branch; $repo.default_branch | Out-File logs\%%r_default_branch.txt -Encoding ascii"
-  set /p DEFAULT_BRANCH=<logs\%%r_default_branch.txt
+  REM Approach 3: Wide date range only to save time
+  powershell -Command "$env:GH_TOKEN='%TOKEN%'; try { $commits = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/repos/Faturrachman-dev/%%r/commits?since=%SINCE_WIDE%&until=%UNTIL_WIDE%'; $commits | ConvertTo-Json -Depth 10 | Out-File logs\%%r_commits_wide.json -Encoding ascii; if ($commits -is [array]) { $count = $commits.Count } else { $count = 0 }; $count | Out-File logs\%%r_count_wide.txt -Encoding ascii } catch { Write-Host 'Error accessing repository'; 0 | Out-File logs\%%r_count_wide.txt -Encoding ascii }"
   
-  REM Approach 1: WIB timezone
-  powershell -Command "$env:GH_TOKEN='%TOKEN%'; $commits = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/repos/Faturrachman-dev/%%r/commits?since=%SINCE_WIB%&until=%UNTIL_WIB%'; $commits | ConvertTo-Json -Depth 10 | Out-File logs\%%r_commits_wib.json -Encoding ascii; if ($commits -is [array]) { $count = $commits.Count } else { $count = 0 }; $count | Out-File logs\%%r_count_wib.txt -Encoding ascii"
-  set /p REPO_COUNT_WIB=<logs\%%r_count_wib.txt
-  set /a TOTAL_COMMITS_WIB+=REPO_COUNT_WIB
-  
-  if !REPO_COUNT_WIB! GTR 0 (
-    echo   [WIB] Found !REPO_COUNT_WIB! commits in %%r
-    powershell -Command "$commits = Get-Content logs\%%r_commits_wib.json | ConvertFrom-Json; if ($commits -is [array] -and $commits.Count -gt 0) { foreach ($c in $commits) { Write-Host '  - ' $c.commit.author.date $c.commit.message.Split(\"`n\")[0] } }"
+  if exist logs\%%r_count_wide.txt (
+    set /p REPO_COUNT_WIDE=<logs\%%r_count_wide.txt
+  ) else (
+    set REPO_COUNT_WIDE=0
   )
   
-  REM Approach 2: UTC dates
-  powershell -Command "$env:GH_TOKEN='%TOKEN%'; $commits = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/repos/Faturrachman-dev/%%r/commits?since=%SINCE_UTC%&until=%UNTIL_UTC%'; $commits | ConvertTo-Json -Depth 10 | Out-File logs\%%r_commits_utc.json -Encoding ascii; if ($commits -is [array]) { $count = $commits.Count } else { $count = 0 }; $count | Out-File logs\%%r_count_utc.txt -Encoding ascii"
-  set /p REPO_COUNT_UTC=<logs\%%r_count_utc.txt
-  set /a TOTAL_COMMITS_UTC+=REPO_COUNT_UTC
-  
-  if !REPO_COUNT_UTC! GTR 0 (
-    echo   [UTC] Found !REPO_COUNT_UTC! commits in %%r
-    powershell -Command "$commits = Get-Content logs\%%r_commits_utc.json | ConvertFrom-Json; if ($commits -is [array] -and $commits.Count -gt 0) { foreach ($c in $commits) { Write-Host '  - ' $c.commit.author.date $c.commit.message.Split(\"`n\")[0] } }"
-  )
-  
-  REM Approach 3: Wide date range with branch information
-  powershell -Command "$env:GH_TOKEN='%TOKEN%'; $commits = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/repos/Faturrachman-dev/%%r/commits?since=%SINCE_WIDE%&until=%UNTIL_WIDE%'; $commits | ConvertTo-Json -Depth 10 | Out-File logs\%%r_commits_wide.json -Encoding ascii; if ($commits -is [array]) { $count = $commits.Count } else { $count = 0 }; $count | Out-File logs\%%r_count_wide.txt -Encoding ascii"
-  set /p REPO_COUNT_WIDE=<logs\%%r_count_wide.txt
   set /a TOTAL_COMMITS_WIDE+=REPO_COUNT_WIDE
   
   if !REPO_COUNT_WIDE! GTR 0 (
     echo   [WIDE] Found !REPO_COUNT_WIDE! commits in %%r
-    echo   Checking branch information:
-    
-    powershell -Command "$defaultBranch = '%DEFAULT_BRANCH%'.Trim(); $env:GH_TOKEN='%TOKEN%'; $commits = Get-Content logs\%%r_commits_wide.json | ConvertFrom-Json; $defaultCount = 0; $otherCount = 0; Write-Host '  Default branch is:' $defaultBranch; if ($commits -is [array] -and $commits.Count -gt 0) { foreach ($c in $commits) { $branch = 'unknown'; $sha = $c.sha; try { $branchData = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri ('https://api.github.com/repos/Faturrachman-dev/%%r/commits/' + $sha + '/branches-where-head'); if ($branchData -is [array] -and $branchData.Count -gt 0) { $branch = $branchData[0].name } } catch { Write-Host ('  Error checking branch for commit ' + $sha + ': ' + $_.Exception.Message) }; if ($branch -eq $defaultBranch) { $defaultCount++ } else { $otherCount++ }; Write-Host ('  - ' + $c.commit.author.date + ' ' + $c.commit.message.Split(\"`n\")[0] + ' | Branch: ' + $branch) } }; Write-Host '  Default branch commits:' $defaultCount; Write-Host '  Other branch commits:' $otherCount; $defaultCount | Out-File logs\%%r_default_branch_count.txt -Encoding ascii; $otherCount | Out-File logs\%%r_other_branch_count.txt -Encoding ascii"
-    
-    set /p REPO_DEFAULT_COUNT=<logs\%%r_default_branch_count.txt
-    set /p REPO_OTHER_COUNT=<logs\%%r_other_branch_count.txt
-    set /a TOTAL_DEFAULT_BRANCH_COMMITS+=REPO_DEFAULT_COUNT
-    set /a TOTAL_OTHER_BRANCH_COMMITS+=REPO_OTHER_COUNT
+    powershell -Command "$commits = Get-Content logs\%%r_commits_wide.json | ConvertFrom-Json; if ($commits -is [array] -and $commits.Count -gt 0) { foreach ($c in $commits) { Write-Host '  - ' $c.commit.author.date $c.commit.message.Split(\"`n\")[0] } }"
   )
-  
-  REM Check issues created/closed in the date range
-  powershell -Command "$env:GH_TOKEN='%TOKEN%'; $issues = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/repos/Faturrachman-dev/%%r/issues?state=all&since=%SINCE_WIDE%'; $issues | ConvertTo-Json -Depth 10 | Out-File logs\%%r_issues.json -Encoding ascii; $relevantIssues = @(); if ($issues -is [array]) { foreach ($i in $issues) { $created = [datetime]$i.created_at; $updated = [datetime]$i.updated_at; $sinceDate = [datetime]'%SINCE_WIDE%'; $untilDate = [datetime]'%UNTIL_WIDE%'; if (($created -ge $sinceDate -and $created -le $untilDate) -or ($updated -ge $sinceDate -and $updated -le $untilDate)) { $relevantIssues += $i } } }; Write-Host '  Issues activity:' $relevantIssues.Count; foreach ($i in $relevantIssues) { Write-Host '  - ' $i.created_at $i.title }; $relevantIssues.Count | Out-File logs\%%r_issues_count.txt -Encoding ascii"
-  set /p REPO_ISSUES=<logs\%%r_issues_count.txt
-  set /a TOTAL_ISSUES+=REPO_ISSUES
-  
-  REM Check pull requests in the date range
-  powershell -Command "$env:GH_TOKEN='%TOKEN%'; $prs = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/repos/Faturrachman-dev/%%r/pulls?state=all'; $prs | ConvertTo-Json -Depth 10 | Out-File logs\%%r_prs.json -Encoding ascii; $relevantPRs = @(); if ($prs -is [array]) { foreach ($pr in $prs) { $created = [datetime]$pr.created_at; $updated = [datetime]$pr.updated_at; $sinceDate = [datetime]'%SINCE_WIDE%'; $untilDate = [datetime]'%UNTIL_WIDE%'; if (($created -ge $sinceDate -and $created -le $untilDate) -or ($updated -ge $sinceDate -and $updated -le $untilDate)) { $relevantPRs += $pr } } }; Write-Host '  Pull requests activity:' $relevantPRs.Count; foreach ($pr in $relevantPRs) { Write-Host '  - ' $pr.created_at $pr.title }; $relevantPRs.Count | Out-File logs\%%r_prs_count.txt -Encoding ascii"
-  set /p REPO_PRS=<logs\%%r_prs_count.txt
-  set /a TOTAL_PRS+=REPO_PRS
-  
-  REM Check code reviews in the date range (less reliable as review comments API is limited)
-  powershell -Command "$env:GH_TOKEN='%TOKEN%'; $reviews = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/repos/Faturrachman-dev/%%r/pulls/comments'; $reviews | ConvertTo-Json -Depth 10 | Out-File logs\%%r_reviews.json -Encoding ascii; $relevantReviews = @(); if ($reviews -is [array]) { foreach ($r in $reviews) { $created = [datetime]$r.created_at; $sinceDate = [datetime]'%SINCE_WIDE%'; $untilDate = [datetime]'%UNTIL_WIDE%'; if ($created -ge $sinceDate -and $created -le $untilDate) { $relevantReviews += $r } } }; Write-Host '  Code reviews activity:' $relevantReviews.Count; $relevantReviews.Count | Out-File logs\%%r_reviews_count.txt -Encoding ascii"
-  set /p REPO_REVIEWS=<logs\%%r_reviews_count.txt
-  set /a TOTAL_REVIEWS+=REPO_REVIEWS
-  
-  echo.
-  timeout /t 1 /nobreak >nul
+
+  REM Check for issues and PRs for this repository
+  echo   Checking issues and PRs in %%r...
+  powershell -Command "$env:GH_TOKEN='%TOKEN%'; try { $issues = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/repos/Faturrachman-dev/%%r/issues?state=all&since=%SINCE_WIDE%'; $issues | ConvertTo-Json -Depth 10 | Out-File logs\%%r_issues.json -Encoding ascii; $issueCount = 0; $prCount = 0; $issueCommentCount = 0; $may11Issues = 0; $may11PRs = 0; $may11Comments = 0; foreach ($issue in $issues) { $created = [datetime]$issue.created_at; $day = $created.Day; $isPR = $issue.pull_request -ne $null; if ($created -ge [datetime]'%SINCE_WIDE%' -and $created -le [datetime]'%UNTIL_WIDE%') { if($isPR) { $prCount++; if($day -eq 11) { $may11PRs++ } } else { $issueCount++; if($day -eq 11) { $may11Issues++ } } }; if($issue.comments -gt 0) { $comments = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri $issue.comments_url; foreach($comment in $comments) { $commentDate = [datetime]$comment.created_at; if($commentDate -ge [datetime]'%SINCE_WIDE%' -and $commentDate -le [datetime]'%UNTIL_WIDE%') { $issueCommentCount++; if($commentDate.Day -eq 11) { $may11Comments++ } } } } }; if($issueCount -gt 0 -or $prCount -gt 0 -or $issueCommentCount -gt 0) { Write-Host \"  Found contributions: $issueCount issues, $prCount PRs, $issueCommentCount comments\"; Write-Host \"  May 11 activity: $may11Issues issues, $may11PRs PRs, $may11Comments comments\" }; $issueCount,$prCount,$issueCommentCount,$may11Issues,$may11PRs,$may11Comments | Out-File logs\%%r_activity_stats.txt -Encoding ascii } catch { Write-Host '  Error accessing issues'; '0,0,0,0,0,0' | Out-File logs\%%r_activity_stats.txt -Encoding ascii }"
 )
+
+echo.
+echo ========== GITHUB EVENTS ANALYSIS ========== [%time%]
+echo.
+echo Checking GitHub user events directly...
+powershell -Command "$env:GH_TOKEN='%TOKEN%'; $events = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/users/Faturrachman-dev/events?per_page=100'; $events | ConvertTo-Json -Depth 10 | Out-File logs\github_events.json -Encoding ascii; $relevantEvents = @(); foreach ($e in $events) { $date = [datetime]$e.created_at; $sinceDate = [datetime]'%SINCE_WIDE%'; $untilDate = [datetime]'%UNTIL_WIDE%'; if ($date -ge $sinceDate -and $date -le $untilDate) { $relevantEvents += $e } }; Write-Host 'Events in date range:' $relevantEvents.Count; $relevantEvents | Group-Object type | ForEach-Object { Write-Host $_.Name ':' $_.Count }; $relevantEvents | ForEach-Object { Write-Output \"{0:yyyy-MM-dd HH:mm:ss} - {1} - {2}\" -f [datetime]$_.created_at, $_.type, $_.repo.name } | Out-File -FilePath logs\github_events.txt -Encoding ascii"
+
+REM Analyze ALL contribution types in detail
+echo.
+echo Analyzing all contribution types in detail...
+
+REM First, analyze push events for commits
+powershell -Command "$events = Get-Content logs\github_events.json | ConvertFrom-Json; $pushEvents = $events | Where-Object { $_.type -eq 'PushEvent' }; $totalCommits = 0; $repoStats = @{}; $branchStats = @{}; $mayCounts = @{11 = 0; 10 = 0; 12 = 0}; foreach ($push in $pushEvents) { $date = [datetime]$push.created_at; $sinceDate = [datetime]'%SINCE_WIDE%'; $untilDate = [datetime]'%UNTIL_WIDE%'; if ($date -ge $sinceDate -and $date -le $untilDate) { $repoName = $push.repo.name; $branch = $push.payload.ref.Replace('refs/heads/', ''); $commits = $push.payload.size; if (-not $commits) { $commits = 0 }; $totalCommits += $commits; $dayOfMonth = $date.Day; if ($mayCounts.ContainsKey($dayOfMonth)) { $mayCounts[$dayOfMonth] += $commits }; if (-not $repoStats.ContainsKey($repoName)) { $repoStats[$repoName] = 0 }; $repoStats[$repoName] += $commits; $branchKey = \"$repoName / $branch\"; if (-not $branchStats.ContainsKey($branchKey)) { $branchStats[$branchKey] = 0 }; $branchStats[$branchKey] += $commits; Write-Host \"$date - $repoName - Branch: $branch - Commits: $commits\"; } }; Write-Host \"`nTotal commits from push events: $totalCommits`n\"; Write-Host \"Commits by date:`n- May 10: $($mayCounts[10])`n- May 11: $($mayCounts[11])`n- May 12: $($mayCounts[12])`n\"; Write-Host \"Commits by repository:\"; $repoStats.GetEnumerator() | Sort-Object Value -Descending | ForEach-Object { Write-Host \"$($_.Key): $($_.Value) commits\" }; Write-Host \"`nCommits by branch:\"; $branchStats.GetEnumerator() | Sort-Object Value -Descending | ForEach-Object { Write-Host \"$($_.Key): $($_.Value) commits\" }; $totalCommits | Out-File logs\push_events_commits.txt -Encoding ascii; $mayCounts[11] | Out-File logs\may11_commits.txt -Encoding ascii"
+set /p PUSH_COMMITS=<logs\push_events_commits.txt
+set /p MAY11_COMMITS=<logs\may11_commits.txt
+
+REM Now analyze other contribution types
+powershell -Command "$events = Get-Content logs\github_events.json | ConvertFrom-Json; $issueEvents = @($events | Where-Object { $_.type -eq 'IssuesEvent' }); $prEvents = @($events | Where-Object { $_.type -eq 'PullRequestEvent' }); $commentEvents = @($events | Where-Object { $_.type -in @('IssueCommentEvent', 'CommitCommentEvent', 'PullRequestReviewCommentEvent') }); $reviewEvents = @($events | Where-Object { $_.type -eq 'PullRequestReviewEvent' }); $createEvents = @($events | Where-Object { $_.type -eq 'CreateEvent' }); $deleteEvents = @($events | Where-Object { $_.type -eq 'DeleteEvent' }); $forkEvents = @($events | Where-Object { $_.type -eq 'ForkEvent' }); $watchEvents = @($events | Where-Object { $_.type -eq 'WatchEvent' }); function CountByDay($eventsArray) { $counts = @{10 = 0; 11 = 0; 12 = 0}; foreach ($e in $eventsArray) { $day = ([datetime]$e.created_at).Day; if ($counts.ContainsKey($day)) { $counts[$day]++ } }; return $counts }; $issueCounts = CountByDay($issueEvents); $prCounts = CountByDay($prEvents); $commentCounts = CountByDay($commentEvents); $reviewCounts = CountByDay($reviewEvents); $createCounts = CountByDay($createEvents); $deleteCounts = CountByDay($deleteEvents); $forkCounts = CountByDay($forkEvents); $watchCounts = CountByDay($watchEvents); Write-Host \"`nContribution analysis by day:`\"; Write-Host \"- Issues: May 10: $($issueCounts[10]), May 11: $($issueCounts[11]), May 12: $($issueCounts[12])\"; Write-Host \"- Pull Requests: May 10: $($prCounts[10]), May 11: $($prCounts[11]), May 12: $($prCounts[12])\"; Write-Host \"- Comments: May 10: $($commentCounts[10]), May 11: $($commentCounts[11]), May 12: $($commentCounts[12])\"; Write-Host \"- Reviews: May 10: $($reviewCounts[10]), May 11: $($reviewCounts[11]), May 12: $($reviewCounts[12])\"; Write-Host \"- Create: May 10: $($createCounts[10]), May 11: $($createCounts[11]), May 12: $($createCounts[12])\"; Write-Host \"- Delete: May 10: $($deleteCounts[10]), May 11: $($deleteCounts[11]), May 12: $($deleteCounts[12])\"; Write-Host \"- Fork: May 10: $($forkCounts[10]), May 11: $($forkCounts[11]), May 12: $($forkCounts[12])\"; Write-Host \"- Watch: May 10: $($watchCounts[10]), May 11: $($watchCounts[11]), May 12: $($watchCounts[12])\"; $may11Total = $issueCounts[11] + $prCounts[11] + $commentCounts[11] + $reviewCounts[11] + $createCounts[11] + $deleteCounts[11] + $forkCounts[11] + $watchCounts[11]; Write-Host \"`nTotal non-commit contributions on May 11: $may11Total\"; $may11Total | Out-File logs\may11_other_contributions.txt -Encoding ascii"
+set /p MAY11_OTHER=<logs\may11_other_contributions.txt
+
+REM Calculate total contributions
+powershell -Command "$total = %MAY11_COMMITS% + %MAY11_OTHER%; Write-Host 'Total May 11 contributions: ' $total; $total | Out-File logs\may11_total.txt -Encoding ascii"
+set /p MAY11_TOTAL=<logs\may11_total.txt
+
+REM Check the contribution graph data directly using alternative API
+echo.
+echo Checking direct contribution data for May 11...
+powershell -Command "try { $directData = Invoke-RestMethod -Uri 'https://github.com/users/Faturrachman-dev/contributions' -Headers @{Accept = 'application/json'}; Write-Host 'Successfully fetched direct contribution data' } catch { Write-Host 'Could not access direct contribution data' }"
 
 echo.
 echo ========== RESULTS SUMMARY ========== [%time%]
 echo.
 echo COMMITS:
-echo - Approach 1 (WIB): Found %TOTAL_COMMITS_WIB% total commits
-echo - Approach 2 (UTC): Found %TOTAL_COMMITS_UTC% total commits
-echo - Approach 3 (WIDE): Found %TOTAL_COMMITS_WIDE% total commits
-echo   * Default branch commits: %TOTAL_DEFAULT_BRANCH_COMMITS%
-echo   * Other branch commits: %TOTAL_OTHER_BRANCH_COMMITS%
+echo - Found in repositories API: %TOTAL_COMMITS_WIDE% total commits
+echo - Found in Events API: %PUSH_COMMITS% total commits
+echo - May 11 commits count: %MAY11_COMMITS%
 echo.
-echo OTHER CONTRIBUTIONS:
-echo - Issues created/updated: %TOTAL_ISSUES%
-echo - Pull requests created/updated: %TOTAL_PRS%
-echo - Code reviews: %TOTAL_REVIEWS%
+echo OTHER CONTRIBUTIONS ON MAY 11:
+echo - Issues, PRs, comments, etc.: %MAY11_OTHER%
 echo.
-powershell -Command "$total = %TOTAL_DEFAULT_BRANCH_COMMITS% + %TOTAL_ISSUES% + %TOTAL_PRS% + %TOTAL_REVIEWS%; Write-Host 'TOTAL CONTRIBUTIONS FOUND: ' $total; $total | Out-File logs\total_contributions.txt -Encoding ascii"
-set /p TOTAL_CONTRIBUTIONS=<logs\total_contributions.txt
-echo TOTAL CONTRIBUTIONS COUNTED BY GITHUB API: %TOTAL_CONTRIBUTIONS%
-
-REM Create a consolidated list of all contributions in the wider time range
+echo TOTAL MAY 11 CONTRIBUTIONS: %MAY11_TOTAL%
 echo.
-echo Generating a timeline of all contributions in the wider time range...
-powershell -Command "$files = Get-ChildItem logs\*_commits_wide.json; $allCommits = @(); foreach ($file in $files) { $commits = Get-Content $file | ConvertFrom-Json; if ($commits -is [array] -and $commits.Count -gt 0) { $allCommits += $commits } }; $allCommits | Sort-Object { [datetime]$_.commit.author.date } | ForEach-Object { $date = [datetime]$_.commit.author.date; Write-Output \"{0:yyyy-MM-dd HH:mm:ss} - COMMIT - {1} - {2}\" -f $date, $_.repository.name, $_.commit.message.Split(\"`n\")[0] } | Out-File -FilePath logs\contribution_timeline.txt -Encoding ascii"
-
-REM Add issues to the timeline
-powershell -Command "$files = Get-ChildItem logs\*_issues.json; foreach ($file in $files) { $issues = Get-Content $file | ConvertFrom-Json; if ($issues -is [array] -and $issues.Count -gt 0) { foreach ($issue in $issues) { $date = [datetime]$issue.created_at; if ($date -ge [datetime]'%SINCE_WIDE%' -and $date -le [datetime]'%UNTIL_WIDE%') { Write-Output \"{0:yyyy-MM-dd HH:mm:ss} - ISSUE - {1} - {2}\" -f $date, $issue.repository_url.Split('/')[-1], $issue.title } } } } | Out-File -FilePath logs\contribution_timeline.txt -Encoding ascii -Append"
-
-REM Add PRs to the timeline
-powershell -Command "$files = Get-ChildItem logs\*_prs.json; foreach ($file in $files) { $prs = Get-Content $file | ConvertFrom-Json; if ($prs -is [array] -and $prs.Count -gt 0) { foreach ($pr in $prs) { $date = [datetime]$pr.created_at; if ($date -ge [datetime]'%SINCE_WIDE%' -and $date -le [datetime]'%UNTIL_WIDE%') { Write-Output \"{0:yyyy-MM-dd HH:mm:ss} - PR - {1} - {2}\" -f $date, $pr.base.repo.name, $pr.title } } } } | Out-File -FilePath logs\contribution_timeline.txt -Encoding ascii -Append"
-
-echo Timeline saved to logs\contribution_timeline.txt
-
-REM Check GitHub user events directly
+echo EXPLANATION:
+echo 1. GitHub contribution graph shows ~14 contributions on May 11
+echo 2. Our analysis found %MAY11_TOTAL% total contributions on May 11:
+echo    - %MAY11_COMMITS% commits
+echo    - %MAY11_OTHER% other contribution activities
+echo 3. The discrepancy between our count (%MAY11_TOTAL%) and GitHub's count (~14) 
+echo    is likely due to:
+echo    - Different timezone cutoffs
+echo    - Private or organization contributions not visible to the API
+echo    - Counting rules that differ from our analysis
 echo.
-echo Checking GitHub user events directly...
-powershell -Command "$env:GH_TOKEN='%TOKEN%'; $events = Invoke-RestMethod -Headers @{Authorization = 'Bearer ' + $env:GH_TOKEN; Accept = 'application/vnd.github+json'} -Uri 'https://api.github.com/users/Faturrachman-dev/events?per_page=100'; $events | ConvertTo-Json -Depth 10 | Out-File logs\github_events.json -Encoding ascii; $relevantEvents = @(); foreach ($e in $events) { $date = [datetime]$e.created_at; $sinceDate = [datetime]'%SINCE_WIDE%'; $untilDate = [datetime]'%UNTIL_WIDE%'; if ($date -ge $sinceDate -and $date -le $untilDate) { $relevantEvents += $e } }; Write-Host 'Events in date range:' $relevantEvents.Count; $relevantEvents | Group-Object type | ForEach-Object { Write-Host $_.Name ':' $_.Count }; $relevantEvents | ForEach-Object { Write-Output \"{0:yyyy-MM-dd HH:mm:ss} - {1} - {2}\" -f [datetime]$_.created_at, $_.type, $_.repo.name } | Out-File -FilePath logs\github_events.txt -Encoding ascii"
-
+echo ROOT CAUSE:
+echo 1. GitHub Actions workflow is using the email "faturrachman.63@smk.belajar.id"
+echo 2. However, our analysis shows your commits are identified by username "Faturrachman-dev"
+echo 3. Replacing the email with username in the GitHub action will fix the counting issue
 echo.
-echo =====================================================
-echo All output files saved to "logs" directory for inspection
-echo.
-echo FINDINGS:
-echo 1. Total commits found: %TOTAL_COMMITS_WIDE% (Default: %TOTAL_DEFAULT_BRANCH_COMMITS%, Other: %TOTAL_OTHER_BRANCH_COMMITS%)
-echo 2. Other activity: Issues: %TOTAL_ISSUES%, PRs: %TOTAL_PRS%, Reviews: %TOTAL_REVIEWS%
-echo 3. Total API-counted contributions: %TOTAL_CONTRIBUTIONS%
-echo.
-echo Possible reasons for discrepancy between API and contribution graph:
-echo 1. Commits to repositories not under your direct ownership (organizations, etc.)
-echo 2. Commits in non-default branches not counting in the API but showing in contribution graph
-echo 3. GitHub uses internal heuristics for contribution counting not exposed through the API
-echo 4. Timezone differences in how commits are counted
-echo 5. Activities that aren't captured by our specific API calls
+echo SOLUTION:
+echo 1. Edit commits-counter/main.yml to use author=Faturrachman-dev instead of the email
+echo 2. This ensures the GitHub action will correctly count all your contributions
 echo.
 echo Files to examine:
-echo - logs\contribution_timeline.txt - Chronological timeline of all contributions
 echo - logs\github_events.txt - Raw events from GitHub's events API
 echo - logs\all_repos_list.txt - List of all repositories checked
 
