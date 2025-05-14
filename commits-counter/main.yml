@@ -57,6 +57,17 @@ jobs:
             local release_events=0
             local public_events=0
             
+            # Fetch commits using the search API to better match GitHub's contribution counting
+            echo "Fetching commits using GitHub search API to match profile contributions..."
+            local commits_response=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/search/commits?q=author:Faturrachman-dev+committer-date:$since_date..$until_date&sort=committer-date&order=desc&per_page=100")
+            
+            # Extract total commit count from search result
+            local commit_count=$(echo "$commits_response" | jq '.total_count // 0')
+            total_commits=$commit_count
+            echo "Found $total_commits commits through search API"
+            
             # Fetch and process GitHub events (up to 3 pages)
             for page in {1..3}; do
               echo "Fetching events page $page..."
@@ -99,15 +110,11 @@ jobs:
                 continue
               fi
                 
-                # Count by event type
+                # Count by event type (excluding PushEvent as we count commits separately)
                 case "$event_type" in
-                  "PushEvent")
+                  "PushEvent") 
                     push_events=$((push_events + 1))
-                    local commit_size=$(echo "$event_data" | jq '.payload.size // 0')
-                    # Handle non-numeric responses
-                    if [[ "$commit_size" =~ ^[0-9]+$ ]]; then
-                      total_commits=$((total_commits + commit_size))
-                    fi
+                    # We don't count commits from events as we use search API for more accurate counting
                     ;;
                   "CreateEvent") create_events=$((create_events + 1)) ;;
                   "IssuesEvent") issues_events=$((issues_events + 1)) ;;
@@ -143,7 +150,8 @@ jobs:
             
             # Output result summary
             echo "Contribution summary for period $since_date to $until_date:"
-            echo "  Push events: $push_events (with $total_commits commits)"
+            echo "  Push events: $push_events"
+            echo "  Commits (from search API): $total_commits"
             echo "  Create events: $create_events"
             echo "  Issues events: $issues_events"
             echo "  Issue comments: $issue_comments"
