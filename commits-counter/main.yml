@@ -63,10 +63,27 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               "https://api.github.com/search/commits?q=author:Faturrachman-dev+committer-date:$since_date..$until_date&sort=committer-date&order=desc&per_page=100")
             
-            # Extract total commit count from search result
-            local commit_count=$(echo "$commits_response" | jq '.total_count // 0')
-            total_commits=$commit_count
-            echo "Found $total_commits commits through search API"
+            # Also fetch commits where user is the committer but not author (e.g., merge commits)
+            echo "Fetching additional commits where user is committer..."
+            local committer_response=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/search/commits?q=committer:Faturrachman-dev+-author:Faturrachman-dev+committer-date:$since_date..$until_date&sort=committer-date&order=desc&per_page=100")
+            
+            # Also check for commits using email address (you may need to adjust this with your actual email)
+            echo "Fetching commits with email faturrachman.63@smk.belajar.id..."
+            local email_response=$(curl -s -H "Authorization: Bearer $COMMIT_COUNTER_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/search/commits?q=author-email:faturrachman.63@smk.belajar.id+committer-date:$since_date..$until_date&sort=committer-date&order=desc&per_page=100")
+            
+            # Extract total commit count from search results and combine
+            local author_commit_count=$(echo "$commits_response" | jq '.total_count // 0')
+            local committer_commit_count=$(echo "$committer_response" | jq '.total_count // 0')
+            local email_commit_count=$(echo "$email_response" | jq '.total_count // 0')
+            total_commits=$((author_commit_count + committer_commit_count + email_commit_count))
+            echo "Found $author_commit_count commits as author by username"
+            echo "Found $committer_commit_count commits as committer"
+            echo "Found $email_commit_count commits by email"
+            echo "Total commits: $total_commits"
             
             # Fetch and process GitHub events (up to 3 pages)
             for page in {1..3}; do
@@ -170,7 +187,8 @@ jobs:
           }
 
           # Count today's contributions (using yesterday's data)
-          YESTERDAY_END_UTC=$(date -u -d "$YESTERDAY_START 23:59:59 +7 hours" +%Y-%m-%dT%H:%M:%SZ)
+          # Fix: Use -7 hours not +7 hours to convert WIB to UTC
+          YESTERDAY_END_UTC=$(date -u -d "$YESTERDAY_START 23:59:59 -7 hours" +%Y-%m-%dT%H:%M:%SZ)
           echo "Counting today's contributions from $YESTERDAY_START_UTC to $YESTERDAY_END_UTC"
           
           # Capture function return values with a clearer format to parse
@@ -210,7 +228,8 @@ jobs:
           
           # Count the entire month's contributions
           echo "Counting contributions for the entire month..."
-          MONTH_END_UTC=$(date -u -d "$(date +%Y-%m-01) +1 month -1 day 23:59:59 +7 hours" +%Y-%m-%dT%H:%M:%SZ)
+          # Fix: Use -7 hours not +7 hours to convert WIB to UTC
+          MONTH_END_UTC=$(date -u -d "$(date +%Y-%m-01) +1 month -1 day 23:59:59 -7 hours" +%Y-%m-%dT%H:%M:%SZ)
           
           # Capture function return values for month using the same approach
           MONTH_OUTPUT=$(count_contributions "$MONTH_START_UTC" "$MONTH_END_UTC")
